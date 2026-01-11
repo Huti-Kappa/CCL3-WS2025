@@ -1,23 +1,115 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CCL3 Projekt Dokumentation</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>CCL3-WS2025: Android Projekt Dokumentation</h1>
-    <p>Willkommen zur Doku meiner App.</p>
-    
-    <h2>Inhalt</h2>
-    <ul>
-        <li><a href="about.html">Über das Projekt</a></li>
-        <li><a href="#setup">Installation</a></li>
-    </ul>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liji - Project Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        }
 
-    <h2 id="setup">Setup & Installation</h2>
-    <p>Klone das Repo und öffne den Ordner <code>code</code> in Android Studio.</p>
-    
-    <img src="images/app-screenshot.png" alt="Screenshot der App" width="300">
+        .imag {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            gap: 8px; /* Kleiner Abstand zwischen den Bildern */
+        }
+
+        /* Das hier ist der wichtige Teil: */
+        .imag img {
+            flex: 1;       /* Jedes Bild nimmt gleich viel Platz ein */
+            width: 0;      /* Trick: Setzt Basisbreite auf 0, damit flex greift */
+            min-width: 0;  /* Erlaubt dem Bild, kleiner als seine Pixelgröße zu werden */
+            height: auto;  /* Behält das Seitenverhältnis bei */
+            object-fit: contain; /* Stellt sicher, dass nichts abgeschnitten wird */
+        }
+    </style>
+</head>
+<body class="bg-white text-black antialiased">
+
+    <main class="max-w-5xl mx-auto px-6 py-24">
+
+        <header class="mb-20">
+            <h1 class="text-6xl font-bold tracking-tighter mb-6">Liji</h1>
+            <p class="text-2xl text-gray-500 font-light leading-relaxed">
+                The virtual closet tracker that reveals the true cost of your wardrobe. 
+                Track usage, calculate Cost Per Wear, and boost your Sustainability Score.
+            </p>
+        </header>
+
+        <section class="mb-20 border-t border-black pt-8">
+            <h2 class="text-sm font-bold uppercase tracking-widest mb-6">Team</h2>
+            <div class="flex flex-col sm:flex-row gap-8">
+                <div>
+                    <span class="block font-semibold text-lg">Flo Madner</span>
+                    <span class="text-gray-500">Co-Founder</span>
+                </div>
+                <div>
+                    <span class="block font-semibold text-lg">Kadim Hüseyin Öksüm</span>
+                    <span class="text-gray-500">Co-Founder</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-20 border-t border-black pt-8">
+            <h2 class="text-sm font-bold uppercase tracking-widest mb-6">App Concept</h2>
+            
+            <div class="mb-10">
+                <h3 class="text-xl font-bold mb-2">The Use Case</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Fast fashion has created a paradox: we own too much but wear too little. 
+                    <strong>Liji</strong> solves "wardrobe inefficiency." By logging daily outfits, users visualize exactly which items are being neglected.
+                    The app calculates a real-time Sustainability Score and Cost Per Wear, incentivizing users to reduce textile waste.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-bold mb-2">Target User</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Designed for the <strong>Conscious Fashionista</strong> and the <strong>Data-Driven Shopper</strong>. 
+                    It is for university students and young professionals who want to know if their clothing investments were worth it 
+                    and who wish to organize their cluttered closets digitally.
+                </p>
+            </div>
+        </section>
+
+        <section class="imag mb-20">
+            <img src="./images/closet detail.png" alt="Closet Detail">
+            <img src="./images/start screen.png" alt="Start Screen">
+            <img src="./images/home.png" alt="Home">
+            <img src="./images/closet.png" alt="Closet">
+            <img src="./images/outfits.png" alt="Outfits">
+            <img src="./images/stats.png" alt="Stats">
+        </section>
+
+        <section class="mb-24 border-t border-black pt-8">
+            <h2 class="text-sm font-bold uppercase tracking-widest mb-6">Prototype</h2>
+            
+            <p class="text-gray-500 mb-6 text-sm">
+                Interact with the Liji user flow below.
+            </p>
+
+            <div class="w-full relative border border-gray-200" style="padding-top: 60%;">
+                <iframe 
+                    class="absolute top-0 left-0 w-full h-full"
+                    src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com/design/yL4Oi7BfJUhoeOwRFKYfen/Wardrobe-stats-v1?node-id=1-3&t=noufMavb8NvKJGw2-1" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <a href="https://www.figma.com/design/yL4Oi7BfJUhoeOwRFKYfen/Wardrobe-stats-v1?node-id=1-3&t=noufMavb8NvKJGw2-1" target="_blank" class="text-sm text-gray-400 underline hover:text-black">
+                    Open in Figma
+                </a>
+            </div>
+        </section>
+
+        <footer class="text-center text-gray-400 text-sm py-12">
+            &copy; 2026 Liji Documentation.
+        </footer>
+
+    </main>
 </body>
 </html>
