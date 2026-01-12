@@ -1,6 +1,8 @@
 package com.example.closetscore.ui.components
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -33,10 +35,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.closetscore.db.ItemCategory
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 @Composable
@@ -58,6 +63,56 @@ fun BasicInputField(
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     )
+}
+
+@Composable
+fun DatePickerField(
+    label: String,
+    value: String,
+    onDateSelected: (String) -> Unit
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = { },
+            label = { Text(label) },
+            readOnly = true,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Select a date") }
+        )
+
+        // Invisible clickable overlay
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    val datePickerDialog = DatePickerDialog(
+                        context,
+                        { _, year: Int, month: Int, dayOfMonth: Int ->
+                            val selectedDate = Calendar.getInstance()
+                            selectedDate.set(year, month, dayOfMonth)
+                            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                            val formattedDate = dateFormat.format(selectedDate.time)
+                            onDateSelected(formattedDate)
+                        },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)
+                    )
+                    datePickerDialog.show()
+                }
+        )
+    }
 }
 
 

@@ -16,7 +16,7 @@ data class ItemEntity(
     val isSecondHand: Boolean,
     val wearCount: Int = 0,
     val store: String?,
-    val date: String?,
+    val date: LocalDate,
     val status: ItemStatus = ItemStatus.ACTIVE
 )
 

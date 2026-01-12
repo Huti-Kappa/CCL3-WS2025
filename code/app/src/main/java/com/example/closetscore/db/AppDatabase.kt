@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 @Database(
     entities = [ItemEntity::class],
     version = 1,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun itemDao(): ItemDao
@@ -28,6 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
                 // build database
                 val instance = Room
                     .databaseBuilder(context, AppDatabase::class.java, "contact_database")
+                    .fallbackToDestructiveMigration() // Add this to avoid migration issues
                     .build()
 
                 // Stores and returns the newly created database instance.

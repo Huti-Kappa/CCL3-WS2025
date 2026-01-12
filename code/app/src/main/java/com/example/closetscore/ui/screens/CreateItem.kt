@@ -46,12 +46,15 @@ import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.BasicInputField
 import com.example.closetscore.ui.components.CategorySelection
+import com.example.closetscore.ui.components.DatePickerField
 import com.example.closetscore.ui.components.ImageSelector
 import com.example.closetscore.ui.components.ItemCard
 import com.example.closetscore.ui.components.StepperRow
 import com.example.closetscore.ui.components.SwitchRow
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import kotlinx.coroutines.delay
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -132,11 +135,10 @@ fun ItemCreateScreen(
                     )
                 }
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    BasicInputField(
+                    DatePickerField(
                         label = "Purchase Date",
                         value = date,
-                        onValueChange = { date = it },
-                        keyboardType = KeyboardType.Decimal
+                        onDateSelected = { date = it }
                     )
                 }
                 item(span = { GridItemSpan(maxLineSpan) }) {
@@ -150,8 +152,7 @@ fun ItemCreateScreen(
                     BasicInputField(
                         label = "Store",
                         value = store,
-                        onValueChange = { store = it },
-                        keyboardType = KeyboardType.Decimal
+                        onValueChange = { store = it }
                     )
                 }
                 item(span = { GridItemSpan(maxLineSpan) }) {
@@ -174,12 +175,24 @@ fun ItemCreateScreen(
                         enabled = name.isNotBlank() && category != null,
                         onClick = {
                             val finalPrice = price.toDoubleOrNull() ?: 0.0
+
+                            val finalDate = if (date.isNotBlank()) {
+                                try {
+                                    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                                    LocalDate.parse(date, formatter)
+                                } catch (e: Exception) {
+                                    LocalDate.now()
+                                }
+                            } else {
+                                LocalDate.now()
+                            }
+
                             if (category != null) {
                                 val newItem = ItemEntity(
                                     name = name,
                                     category = category!!,
                                     price = finalPrice,
-                                    date = date,
+                                    date = finalDate,
                                     brand = brand,
                                     store = store,
                                     isSecondHand = isSecondHand,
@@ -198,8 +211,6 @@ fun ItemCreateScreen(
         }
     }
 }
-
-
 
 @Composable
 fun SuccessView() {
