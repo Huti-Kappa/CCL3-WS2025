@@ -26,6 +26,8 @@ class ItemRepository(private val itemDao: ItemDao) {
                 entity.price,
                 entity.isSecondHand,
                 entity.wearCount,
+                entity.store,
+                entity.date,
                 entity.status
             )
         }

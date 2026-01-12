@@ -12,10 +12,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
@@ -24,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +47,7 @@ import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.BasicInputField
 import com.example.closetscore.ui.components.CategorySelection
 import com.example.closetscore.ui.components.ImageSelector
+import com.example.closetscore.ui.components.ItemCard
 import com.example.closetscore.ui.components.StepperRow
 import com.example.closetscore.ui.components.SwitchRow
 import com.example.closetscore.ui.viewmodel.ItemViewModel
@@ -59,6 +66,8 @@ fun ItemCreateScreen(
     var isSecondHand by remember { mutableStateOf(false) }
     var wearCount by remember { mutableIntStateOf(0) }
     var photoUri by remember { mutableStateOf("") }
+    var store by remember { mutableStateOf("") }
+    var date by remember { mutableStateOf("") }
 
 
     var isSuccess by remember { mutableStateOf(false) }
@@ -80,79 +89,116 @@ fun ItemCreateScreen(
         if (success) {
             SuccessView()
         } else {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 128.dp),
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                contentPadding = PaddingValues(16.dp)
             ) {
-                Text(
-                    text = "Add New Item",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 24.dp)
-                )
-                ImageSelector(
-                    onImageSelected = { newUri -> photoUri = newUri }
-                )
-                BasicInputField(
-                    label = "Item Name",
-                    value = name,
-                    onValueChange = { name = it }
-                )
-                BasicInputField(
-                    label = "Brand Name",
-                    value = brand,
-                    onValueChange = { brand = it }
-                )
-                BasicInputField(
-                    label = "Item Price",
-                    value = price,
-                    onValueChange = { price = it },
-                    keyboardType = KeyboardType.Decimal
-                )
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Text(
+                        text = "Add New Item",
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(bottom = 24.dp)
+                    )
+                }
 
-                CategorySelection(
-                    label = "Category",
-                    selectedCategory = category,
-                    onCategorySelected = { newCategory -> category = newCategory }
-                )
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    ImageSelector(
+                        onImageSelected = { newUri -> photoUri = newUri }
+                    )
+                }
 
-                StepperRow(
-                    label = "Times Worn",
-                    value = wearCount,
-                    onValueChange = { wearCount = it }
-                )
-
-                SwitchRow(
-                    label = "Thrifted?",
-                    checked = isSecondHand,
-                    onCheckedChange = { isSecondHand = it }
-                )
-
-                Button(
-                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                    enabled = name.isNotBlank() && category != null,
-                    onClick = {
-                        val finalPrice = price.toDoubleOrNull() ?: 0.0
-                        if (category != null) {
-                            val newItem = ItemEntity(
-                                name = name,
-                                brand = brand,
-                                category = category!!,
-                                price = finalPrice,
-                                isSecondHand = isSecondHand,
-                                wearCount = wearCount,
-                                photoUri = if (photoUri.isBlank()) null else photoUri
-                            )
-                            itemViewModel.addItem(newItem)
-                            isSuccess = true
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    BasicInputField(
+                        label = "Item Name",
+                        value = name,
+                        onValueChange = { name = it }
+                    )
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    CategorySelection(
+                        label = "Category",
+                        selectedCategory = category,
+                        onCategorySelected = { newCategory -> category = newCategory }
+                    )
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    BasicInputField(
+                        label = "Item Price",
+                        value = price,
+                        onValueChange = { price = it },
+                        keyboardType = KeyboardType.Decimal
+                    )
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    BasicInputField(
+                        label = "Purchase Date",
+                        value = date,
+                        onValueChange = { date = it },
+                        keyboardType = KeyboardType.Decimal
+                    )
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    BasicInputField(
+                        label = "Brand Name",
+                        value = brand,
+                        onValueChange = { brand = it }
+                    )
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    BasicInputField(
+                        label = "Store",
+                        value = store,
+                        onValueChange = { store = it },
+                        keyboardType = KeyboardType.Decimal
+                    )
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    StepperRow(
+                        label = "Times Worn",
+                        value = wearCount,
+                        onValueChange = { wearCount = it }
+                    )
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    SwitchRow(
+                        label = "Thrifted?",
+                        checked = isSecondHand,
+                        onCheckedChange = { isSecondHand = it }
+                    )
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Button(
+                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                        enabled = name.isNotBlank() && category != null,
+                        onClick = {
+                            val finalPrice = price.toDoubleOrNull() ?: 0.0
+                            if (category != null) {
+                                val newItem = ItemEntity(
+                                    name = name,
+                                    category = category!!,
+                                    price = finalPrice,
+                                    date = date,
+                                    brand = brand,
+                                    store = store,
+                                    isSecondHand = isSecondHand,
+                                    wearCount = wearCount,
+                                    photoUri = photoUri.ifBlank { null }
+                                )
+                                itemViewModel.addItem(newItem)
+                                isSuccess = true
+                            }
                         }
+                    ) {
+                        Text("Add to Closet")
                     }
-                ) {
-                    Text("Save Item")
                 }
             }
         }
     }
 }
+
 
 
 @Composable
@@ -175,5 +221,26 @@ fun SuccessView() {
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(top = 16.dp)
         )
+    }
+}
+
+@Composable
+fun AddItemGrid(itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+    val itemsList by itemViewModel.repository.items.collectAsState(initial = emptyList())
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 128.dp),
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+        contentPadding = PaddingValues(16.dp)
+    ) {
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Text(
+                text="Add new Item",
+                style = MaterialTheme.typography.displaySmall,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+        }
+
     }
 }

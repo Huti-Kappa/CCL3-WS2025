@@ -11,5 +11,7 @@ data class Item(
     val price: Double,
     val isSecondHand: Boolean,
     val wearCount: Int = 0,
+    val store: String?,
+    val date: String?,
     val status: ItemStatus = ItemStatus.ACTIVE
 )
