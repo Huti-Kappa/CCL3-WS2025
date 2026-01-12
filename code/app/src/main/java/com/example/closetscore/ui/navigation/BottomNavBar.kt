@@ -25,6 +25,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.closetscore.ui.theme.DarkGrey
 import com.example.closetscore.ui.theme.Green
+import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.theme.White
 
 @Composable
@@ -35,8 +36,8 @@ fun BottomNavBar(
     val items = listOf(
         Screen.Home,
         Screen.Closet,
-        Screen.Stats,
-        Screen.Profile
+        Screen.Outfits,
+        Screen.Stats
     )
     Box(
         modifier = modifier.fillMaxWidth(),
@@ -97,7 +98,7 @@ fun BottomNavBar(
                     restoreState = true
                 }
             },
-            containerColor = Green,
+            containerColor = Red,
             contentColor = White,
             shape = RoundedCornerShape(18.dp),
             modifier = Modifier

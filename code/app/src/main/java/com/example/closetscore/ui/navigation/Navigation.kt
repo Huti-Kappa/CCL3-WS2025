@@ -35,10 +35,6 @@ fun Navigation(
             DummyScreen("Statistics Screen")
         }
 
-        composable(Screen.Profile.route) {
-            DummyScreen("User Profile")
-        }
-
         composable(Screen.Create.route) {
             ItemCreateScreen(navigateBack = { navController.popBackStack() })
         }
