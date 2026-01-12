@@ -21,12 +21,12 @@ data class ItemEntity(
 )
 
 enum class ItemCategory {
-    TOP,        // T-shirts, Shirts, Blouses, Sweaters
-    BOTTOM,     // Jeans, Skirts, Shorts, Trousers
-    SHOES,      // Sneakers, Boots, Sandals
-    OUTERWEAR,  // Jackets, Coats, Blazers
-    ONE_PIECE,  // Dresses, Jumpsuits, Overalls
-    ACCESSORY   // Bags, Scarves, Hats, Belts
+    Top,        // T-shirts, Shirts, Blouses, Sweaters
+    Bottom,     // Jeans, Skirts, Shorts, Trousers
+    Shoes,      // Sneakers, Boots, Sandals
+    Outerwear,  // Jackets, Coats, Blazers
+    One_Piece,  // Dresses, Jumpsuits, Overalls
+    Accessory   // Bags, Scarves, Hats, Belts
 }
 enum class ItemStatus {
     ACTIVE,   // In closet

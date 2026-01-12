@@ -88,7 +88,6 @@ fun DatePickerField(
             placeholder = { Text("Select a date") }
         )
 
-        // Invisible clickable overlay
         Box(
             modifier = Modifier
                 .matchParentSize()
