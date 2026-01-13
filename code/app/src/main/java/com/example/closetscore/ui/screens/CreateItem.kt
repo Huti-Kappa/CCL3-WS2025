@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -51,6 +53,7 @@ import com.example.closetscore.ui.components.ImageSelector
 import com.example.closetscore.ui.components.ItemCard
 import com.example.closetscore.ui.components.StepperRow
 import com.example.closetscore.ui.components.SwitchRow
+import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalDate
@@ -111,9 +114,9 @@ fun SuccessView() {
 @Composable
 fun AddItemGrid(itemViewModel: ItemViewModel, onSuccess: () -> Unit) {
     var name by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf<ItemCategory?>(null) }
     var brand by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf<ItemCategory?>(null) }
     var isSecondHand by remember { mutableStateOf(false) }
     var wearCount by remember { mutableIntStateOf(0) }
     var photoUri by remember { mutableStateOf("") }
@@ -139,17 +142,11 @@ fun AddItemGrid(itemViewModel: ItemViewModel, onSuccess: () -> Unit) {
             )
         }
         item(span = { GridItemSpan(maxLineSpan) }) {
-            BasicInputField(
-                label = "Item Name",
-                value = name,
-                onValueChange = { name = it }
-            )
-        }
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            CategorySelection(
-                label = "Category",
-                selectedCategory = category,
-                onCategorySelected = { newCategory -> category = newCategory }
+            NameSection(
+                name = name,
+                onNameChange = { name = it },
+                category = category,
+                onCategoryChange = { category = it }
             )
         }
         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -233,5 +230,38 @@ fun AddItemGrid(itemViewModel: ItemViewModel, onSuccess: () -> Unit) {
                 Text("Add to Closet")
             }
         }
+    }
+}
+
+@Composable
+fun NameSection(
+    name: String,
+    onNameChange: (String) -> Unit,
+    category: ItemCategory?,
+    onCategoryChange: (ItemCategory?) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .background(
+                color = White,
+                shape = RoundedCornerShape(16.dp),
+
+            )
+            .padding(12.dp)
+    ) {
+        BasicInputField(
+            label = "Item Name",
+            value = name,
+            onValueChange = onNameChange
+        )
+        CategorySelection(
+            label = "Category",
+            selectedCategory = category,
+            onCategorySelected = onCategoryChange
+        )
     }
 }
