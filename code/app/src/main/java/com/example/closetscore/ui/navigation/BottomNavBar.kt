@@ -1,5 +1,6 @@
 package com.example.closetscore.ui.navigation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,10 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.closetscore.ui.theme.Black
 import com.example.closetscore.ui.theme.DarkGrey
 import com.example.closetscore.ui.theme.Green
 import com.example.closetscore.ui.theme.Red
@@ -44,7 +47,16 @@ fun BottomNavBar(
         contentAlignment = Alignment.BottomCenter
     ) {
 
-        Column (modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 8.dp,
+                    spotColor = Black,
+                    ambientColor = Black
+                )
+                .background(White)
+        ) {
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 1.dp,

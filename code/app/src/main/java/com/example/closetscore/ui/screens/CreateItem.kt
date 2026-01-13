@@ -9,6 +9,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,11 +24,16 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -46,6 +52,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.closetscore.db.ItemCategory
 import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.ui.AppViewModelProvider
+import com.example.closetscore.ui.components.AddImage
 import com.example.closetscore.ui.components.BasicInputField
 import com.example.closetscore.ui.components.CategorySelection
 import com.example.closetscore.ui.components.DatePickerField
@@ -136,9 +143,10 @@ fun AddItemGrid(itemViewModel: ItemViewModel, onSuccess: () -> Unit) {
                 modifier = Modifier.padding(bottom = 24.dp)
             )
         }
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            ImageSelector(
-                onImageSelected = { newUri -> photoUri = newUri }
+        item(span = { GridItemSpan(maxLineSpan) })  {
+            AddImage(
+                photoUri = photoUri,
+                onUriChange = { newUri -> photoUri = newUri }
             )
         }
         item(span = { GridItemSpan(maxLineSpan) }) {
