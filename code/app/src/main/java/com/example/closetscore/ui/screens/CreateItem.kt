@@ -62,17 +62,6 @@ fun ItemCreateScreen(
     itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateBack: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var brand by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf<ItemCategory?>(null) }
-    var isSecondHand by remember { mutableStateOf(false) }
-    var wearCount by remember { mutableIntStateOf(0) }
-    var photoUri by remember { mutableStateOf("") }
-    var store by remember { mutableStateOf("") }
-    var date by remember { mutableStateOf("") }
-
-
     var isSuccess by remember { mutableStateOf(false) }
     LaunchedEffect(isSuccess) {
         if (isSuccess) {
@@ -80,7 +69,6 @@ fun ItemCreateScreen(
             navigateBack()
         }
     }
-
     AnimatedContent(
         targetState = isSuccess,
         transitionSpec = {
@@ -92,122 +80,7 @@ fun ItemCreateScreen(
         if (success) {
             SuccessView()
         } else {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 128.dp),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text(
-                        text = "Add New Item",
-                        style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.padding(bottom = 24.dp)
-                    )
-                }
-
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    ImageSelector(
-                        onImageSelected = { newUri -> photoUri = newUri }
-                    )
-                }
-
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    BasicInputField(
-                        label = "Item Name",
-                        value = name,
-                        onValueChange = { name = it }
-                    )
-                }
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    CategorySelection(
-                        label = "Category",
-                        selectedCategory = category,
-                        onCategorySelected = { newCategory -> category = newCategory }
-                    )
-                }
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    BasicInputField(
-                        label = "Item Price",
-                        value = price,
-                        onValueChange = { price = it },
-                        keyboardType = KeyboardType.Decimal
-                    )
-                }
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    DatePickerField(
-                        label = "Purchase Date",
-                        value = date,
-                        onDateSelected = { date = it }
-                    )
-                }
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    BasicInputField(
-                        label = "Brand Name",
-                        value = brand,
-                        onValueChange = { brand = it }
-                    )
-                }
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    BasicInputField(
-                        label = "Store",
-                        value = store,
-                        onValueChange = { store = it }
-                    )
-                }
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    StepperRow(
-                        label = "Times Worn",
-                        value = wearCount,
-                        onValueChange = { wearCount = it }
-                    )
-                }
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    SwitchRow(
-                        label = "Thrifted?",
-                        checked = isSecondHand,
-                        onCheckedChange = { isSecondHand = it }
-                    )
-                }
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Button(
-                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                        enabled = name.isNotBlank() && category != null,
-                        onClick = {
-                            val finalPrice = price.toDoubleOrNull() ?: 0.0
-
-                            val finalDate = if (date.isNotBlank()) {
-                                try {
-                                    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                                    LocalDate.parse(date, formatter)
-                                } catch (e: Exception) {
-                                    LocalDate.now()
-                                }
-                            } else {
-                                LocalDate.now()
-                            }
-
-                            if (category != null) {
-                                val newItem = ItemEntity(
-                                    name = name,
-                                    category = category!!,
-                                    price = finalPrice,
-                                    date = finalDate,
-                                    brand = brand,
-                                    store = store,
-                                    isSecondHand = isSecondHand,
-                                    wearCount = wearCount,
-                                    photoUri = photoUri.ifBlank { null }
-                                )
-                                itemViewModel.addItem(newItem)
-                                isSuccess = true
-                            }
-                        }
-                    ) {
-                        Text("Add to Closet")
-                    }
-                }
-            }
+            AddItemGrid(itemViewModel, onSuccess = { isSuccess = true })
         }
     }
 }
@@ -236,8 +109,17 @@ fun SuccessView() {
 }
 
 @Composable
-fun AddItemGrid(itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
-    val itemsList by itemViewModel.repository.items.collectAsState(initial = emptyList())
+fun AddItemGrid(itemViewModel: ItemViewModel, onSuccess: () -> Unit) {
+    var name by remember { mutableStateOf("") }
+    var brand by remember { mutableStateOf("") }
+    var price by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf<ItemCategory?>(null) }
+    var isSecondHand by remember { mutableStateOf(false) }
+    var wearCount by remember { mutableIntStateOf(0) }
+    var photoUri by remember { mutableStateOf("") }
+    var store by remember { mutableStateOf("") }
+    var date by remember { mutableStateOf("") }
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -246,12 +128,110 @@ fun AddItemGrid(itemViewModel: ItemViewModel = viewModel(factory = AppViewModelP
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             Text(
-                text="Add new Item",
-                style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier.padding(bottom = 8.dp)
+                text = "Add New Item",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 24.dp)
             )
-
         }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            ImageSelector(
+                onImageSelected = { newUri -> photoUri = newUri }
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            BasicInputField(
+                label = "Item Name",
+                value = name,
+                onValueChange = { name = it }
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            CategorySelection(
+                label = "Category",
+                selectedCategory = category,
+                onCategorySelected = { newCategory -> category = newCategory }
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            BasicInputField(
+                label = "Item Price",
+                value = price,
+                onValueChange = { price = it },
+                keyboardType = KeyboardType.Decimal
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            DatePickerField(
+                label = "Purchase Date",
+                value = date,
+                onDateSelected = { date = it }
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            BasicInputField(
+                label = "Brand Name",
+                value = brand,
+                onValueChange = { brand = it }
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            BasicInputField(
+                label = "Store",
+                value = store,
+                onValueChange = { store = it }
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            StepperRow(
+                label = "Times Worn",
+                value = wearCount,
+                onValueChange = { wearCount = it }
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            SwitchRow(
+                label = "Thrifted?",
+                checked = isSecondHand,
+                onCheckedChange = { isSecondHand = it }
+            )
+        }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Button(
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                enabled = name.isNotBlank() && category != null,
+                onClick = {
+                    val finalPrice = price.toDoubleOrNull() ?: 0.0
 
+                    val finalDate = if (date.isNotBlank()) {
+                        try {
+                            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                            LocalDate.parse(date, formatter)
+                        } catch (e: Exception) {
+                            LocalDate.now()
+                        }
+                    } else {
+                        LocalDate.now()
+                    }
+
+                    if (category != null) {
+                        val newItem = ItemEntity(
+                            name = name,
+                            category = category!!,
+                            price = finalPrice,
+                            date = finalDate,
+                            brand = brand,
+                            store = store,
+                            isSecondHand = isSecondHand,
+                            wearCount = wearCount,
+                            photoUri = photoUri.ifBlank { null }
+                        )
+                        itemViewModel.addItem(newItem)
+                        onSuccess()
+                    }
+                }
+            ) {
+                Text("Add to Closet")
+            }
+        }
     }
 }
