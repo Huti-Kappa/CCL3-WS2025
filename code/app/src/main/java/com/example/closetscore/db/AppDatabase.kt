@@ -12,7 +12,7 @@ import androidx.room.TypeConverters
         TemplateEntity::class,
         TemplateItemCrossRef::class
     ],
-    version = 2, // Increment version since we're adding new tables
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
