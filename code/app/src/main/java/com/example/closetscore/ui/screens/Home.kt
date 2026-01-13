@@ -20,22 +20,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+
+import androidx.navigation.NavController
 import com.example.closetscore.data.Item
 import com.example.closetscore.db.ItemCategory
 import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.ItemCard
 import com.example.closetscore.ui.components.Score
+import com.example.closetscore.ui.navigation.Screen
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 
 @Composable
-fun HomeScreen(itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun HomeScreen(navController: NavController, itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val itemsList by itemViewModel.repository.items.collectAsState(initial = emptyList())
-    ItemGrid(itemsList)
+    ItemGrid(navController, itemsList)
 }
 
 @Composable
-fun ItemGrid(itemsList: List<Item>) {
+fun ItemGrid(navController: NavController, itemsList: List<Item>) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -58,13 +61,15 @@ fun ItemGrid(itemsList: List<Item>) {
             MidTitle("Your MVPs")
         }
         items(itemsList.take(2)) { item ->
-            ItemCard(item)
+            ItemCard(item = item,
+                onClick = {navController.navigate("${Screen.ItemDetail.route}/${item.id}")})
         }
         item(span = { GridItemSpan(maxLineSpan) }) {
             MidTitle("Closet Orphans")
         }
         items(itemsList.take(2)) { item ->
-            ItemCard(item)
+            ItemCard(item = item,
+                onClick = {navController.navigate("${Screen.ItemDetail.route}/${item.id}")})
         }
     }
 }

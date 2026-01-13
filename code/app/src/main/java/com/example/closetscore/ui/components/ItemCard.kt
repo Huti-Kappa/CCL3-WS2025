@@ -28,6 +28,7 @@ import coil.request.ImageRequest
 import com.example.closetscore.data.Item
 import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.ui.AppViewModelProvider
+import com.example.closetscore.ui.navigation.Screen
 import com.example.closetscore.ui.theme.Green
 import com.example.closetscore.ui.theme.Grey
 import com.example.closetscore.ui.theme.White
@@ -35,7 +36,7 @@ import com.example.closetscore.ui.viewmodel.ItemViewModel
 
 @OptIn(ExperimentalFoundationApi::class) // Notwendig für combinedClickable
 @Composable
-fun ItemCard(item: Item, itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun ItemCard(item: Item, onClick: () -> Unit, itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
 
@@ -45,7 +46,8 @@ fun ItemCard(item: Item, itemViewModel: ItemViewModel = viewModel(factory = AppV
             .aspectRatio(0.8f)
             .combinedClickable(
                 onClick = {
-                    println("Clicked: ${item.name}")
+                    println("Clicked: ${item.name}") // Removed the comma here
+                    onClick() // Call the lambda passed from Home.kt
                 },
                 onLongClick = {
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)

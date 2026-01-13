@@ -26,11 +26,11 @@ fun Navigation(
         modifier = modifier
     ){
         composable(Screen.Home.route) {
-            HomeScreen()
+            HomeScreen(navController = navController)
         }
 
         composable(Screen.Closet.route) {
-            ClosetScreen("Closet / Wardrobe Screen")
+            ClosetScreen(navController = navController, "Closet / Wardrobe Screen")
         }
 
         composable(Screen.Outfits.route) {
