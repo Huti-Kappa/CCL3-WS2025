@@ -18,6 +18,11 @@ interface ItemDao {
     @Query("SELECT * FROM items")
     fun getAllItems(): Flow<List<ItemEntity>>
 
+    @Query("SELECT * FROM items WHERE id = :itemId")
+    fun getItemById(itemId: Int): ItemEntity
+
     @Query("UPDATE items SET wearCount = wearCount + 1 WHERE id = :itemId")
     suspend fun incrementWearCount(itemId: Int)
+
+
 }

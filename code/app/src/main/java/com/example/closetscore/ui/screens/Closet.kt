@@ -24,15 +24,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.ItemCard
 import com.example.closetscore.ui.viewmodel.ItemViewModel
+import com.example.closetscore.ui.navigation.Screen
+import androidx.navigation.NavController
+
 
 @Composable
-fun ClosetScreen(text: String) {
-    ClosetGrid()
+fun ClosetScreen(navController: NavController, text: String) {
+    ClosetGrid(navController)
 }
 
 
 @Composable
-fun ClosetGrid(itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun ClosetGrid(navController: NavController, itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val itemsList by itemViewModel.repository.items.collectAsState(initial = emptyList())
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
@@ -48,7 +51,8 @@ fun ClosetGrid(itemViewModel: ItemViewModel = viewModel(factory = AppViewModelPr
             )
         }
         items(itemsList) { item ->
-            ItemCard(item)
+            ItemCard(item = item,
+                    onClick = {navController.navigate("${Screen.ItemDetail.route}/${item.id}")})
         }
 }
 

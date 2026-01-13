@@ -23,6 +23,13 @@ class TemplateViewModel(
             initialValue = emptyList()
         )
 
+
+    fun getTemplateWithItems(templateId: Int){
+        viewModelScope.launch{
+            templateRepository.getTemplateWithItems(templateId)
+        }
+    }
+
     fun createTemplate(
         name: String,
         itemIds: List<Int>,
