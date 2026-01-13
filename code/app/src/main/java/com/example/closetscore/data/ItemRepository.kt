@@ -8,12 +8,11 @@ import kotlin.collections.map
 
 class ItemRepository(private val itemDao: ItemDao) {
 
-    val names = listOf(
-        "Max",
-        "Tom",
-        "Anna",
-        "Matt"
-    )
+
+
+    suspend fun getItemById(itemId: Int): ItemEntity {
+        return itemDao.getItemById(itemId)
+    }
 
     val items = itemDao.getAllItems().map { contactList ->
         contactList.map { entity ->

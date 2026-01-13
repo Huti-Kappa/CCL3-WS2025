@@ -21,6 +21,11 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
+    fun getItemById(itemId: Int){
+        viewModelScope.launch{
+            repository.getItemById(itemId)
+        }
+    }
 
     fun addItem(itemEntity: ItemEntity) {
         viewModelScope.launch{

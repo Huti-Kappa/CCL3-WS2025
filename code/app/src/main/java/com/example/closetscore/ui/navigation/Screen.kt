@@ -17,4 +17,6 @@ sealed class Screen (val route: String, val title: String, val icon: ImageVector
     object Stats : Screen("stats", "Stats", Icons.Default.BarChart)
     object Create : Screen("create", "Create", Icons.Default.Person)
     object Template : Screen("template","Template", Icons.Default.Person)
+    object ItemDetail : Screen("item_detail", "ItemDetail", Icons.Default.Person )
+    object TemplateDetail : Screen("template_detail", "TemplateDetail", Icons.Default.Person)
 }
