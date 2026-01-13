@@ -9,6 +9,7 @@ import com.example.closetscore.ui.screens.ClosetScreen
 import com.example.closetscore.ui.screens.HomeScreen
 import com.example.closetscore.ui.screens.ItemCreateScreen
 import com.example.closetscore.ui.screens.OutfitsScreen
+import com.example.closetscore.ui.screens.TemplateCreateScreen
 
 @Composable
 fun Navigation(
@@ -29,7 +30,7 @@ fun Navigation(
         }
 
         composable(Screen.Outfits.route) {
-            OutfitsScreen("Outfits Screen")
+            OutfitsScreen(navController = navController)
         }
 
         composable(Screen.Stats.route) {
@@ -38,6 +39,10 @@ fun Navigation(
 
         composable(Screen.Create.route) {
             ItemCreateScreen(navigateBack = { navController.popBackStack() })
+        }
+
+        composable(Screen.Template.route) {
+            TemplateCreateScreen(navigateBack = { navController.popBackStack() })
         }
     }
 }

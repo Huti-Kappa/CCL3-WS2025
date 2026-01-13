@@ -24,26 +24,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.TemplateCard
+import com.example.closetscore.ui.navigation.Screen
 import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
 
 @Composable
-fun OutfitsScreen(text: String) {
-    OutfitsGrid()
-}
-
-@Composable
-fun OutfitsGrid(templateViewModel: TemplateViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun OutfitsScreen(
+    navController: NavController,
+    templateViewModel: TemplateViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     val templatesList by templateViewModel.templatesWithItems.collectAsState()
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    //  create template screen
+                    navController.navigate(Screen.Template.route)
                 },
                 containerColor = Red,
                 contentColor = White,
@@ -87,7 +87,7 @@ fun OutfitsGrid(templateViewModel: TemplateViewModel = viewModel(factory = AppVi
                         TemplateCard(
                             templateWithItems = templateWithItems,
                             onClick = {
-                                // template detail
+
                             }
                         )
                     }
