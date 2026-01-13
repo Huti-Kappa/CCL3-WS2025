@@ -135,6 +135,8 @@ fun ItemCard(item: Item, itemViewModel: ItemViewModel = viewModel(factory = AppV
                             item.price,
                             item.isSecondHand,
                             item.wearCount,
+                            item.store,
+                            item.date,
                             item.status,
 
                         )

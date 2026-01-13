@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.example.closetscore.ui.screens.ClosetScreen
 import com.example.closetscore.ui.screens.HomeScreen
 import com.example.closetscore.ui.screens.ItemCreateScreen
+import com.example.closetscore.ui.screens.OutfitsScreen
 
 @Composable
 fun Navigation(
@@ -28,7 +29,7 @@ fun Navigation(
         }
 
         composable(Screen.Outfits.route) {
-            DummyScreen("Outfits Screen")
+            OutfitsScreen("Outfits Screen")
         }
 
         composable(Screen.Stats.route) {
