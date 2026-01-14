@@ -12,7 +12,7 @@ import androidx.room.TypeConverters
         TemplateEntity::class,
         TemplateItemCrossRef::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

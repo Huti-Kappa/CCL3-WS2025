@@ -55,6 +55,7 @@ import java.time.format.DateTimeFormatter
 fun TemplateDetailScreen(
     templateId: Int,
     navigateBack: () -> Unit,
+    navigateToEdit: () -> Unit,
     templateViewModel: TemplateViewModel = viewModel(factory = AppViewModelProvider.Factory),
     itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -186,6 +187,27 @@ fun TemplateDetailScreen(
                                     )
                                 }
                             }
+                        }
+                    }
+
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Button(
+                            onClick = navigateToEdit,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp)
+                                .padding(vertical = 8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = White,
+                                contentColor = com.example.closetscore.ui.theme.Black
+                            ),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(
+                                text = "Edit Template",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
                     }
 

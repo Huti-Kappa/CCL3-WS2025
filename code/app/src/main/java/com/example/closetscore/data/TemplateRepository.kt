@@ -25,6 +25,10 @@ class TemplateRepository(private val templateDao: TemplateDao) {
         return templateDao.addTemplate(templateEntity)
     }
 
+    suspend fun updateTemplate(templateEntity: TemplateEntity) {
+        templateDao.updateTemplate(templateEntity)
+    }
+
     suspend fun deleteTemplate(templateEntity: TemplateEntity) {
         templateDao.deleteTemplate(templateEntity)
     }
@@ -39,6 +43,8 @@ class TemplateRepository(private val templateDao: TemplateDao) {
     suspend fun removeItemFromTemplate(templateId: Int, itemId: Int) {
         templateDao.removeItemFromTemplate(templateId, itemId)
     }
+
+
 
     suspend fun getTemplateWithItems(templateId: Int) = templateDao.getTemplateWithItems(templateId)
 }

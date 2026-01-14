@@ -79,6 +79,17 @@ class TemplateViewModel(
         }
     }
 
+    fun updateTemplate(templateEntity: TemplateEntity) {
+        viewModelScope.launch {
+            try {
+                repository.updateTemplate(templateEntity)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
     fun removeItemFromTemplate(templateId: Int, itemId: Int) {
         viewModelScope.launch {
             try {
