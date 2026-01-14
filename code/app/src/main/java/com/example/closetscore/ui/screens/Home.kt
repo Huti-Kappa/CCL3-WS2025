@@ -28,6 +28,7 @@ import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.HeaderText
 import com.example.closetscore.ui.components.ItemCard
+import com.example.closetscore.ui.components.MidTitle
 import com.example.closetscore.ui.components.Score
 import com.example.closetscore.ui.navigation.Screen
 import com.example.closetscore.ui.viewmodel.ItemViewModel
@@ -68,24 +69,5 @@ fun ItemGrid(navController: NavController, itemsList: List<Item>) {
             ItemCard(item = item,
                 onClick = {navController.navigate("${Screen.ItemDetail.route}/${item.id}")})
         }
-    }
-}
-
-
-@Composable
-fun MidTitle(title: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = title
-        )
-        Text(
-            text = ""
-        )
     }
 }
