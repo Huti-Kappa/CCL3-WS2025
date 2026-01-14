@@ -14,6 +14,7 @@ import com.example.closetscore.ui.screens.HomeScreen
 import com.example.closetscore.ui.screens.ItemCreateScreen
 import com.example.closetscore.ui.screens.ItemDetailScreen
 import com.example.closetscore.ui.screens.OutfitsScreen
+import com.example.closetscore.ui.screens.StatsScreen
 import com.example.closetscore.ui.screens.TemplateCreateScreen
 import com.example.closetscore.ui.screens.TemplateDetailScreen
 
@@ -42,7 +43,7 @@ fun Navigation(
         }
 
         composable(Screen.Stats.route) {
-            DummyScreen("Statistics Screen")
+            StatsScreen(navController = navController)
         }
 
         composable(Screen.Create.route) {

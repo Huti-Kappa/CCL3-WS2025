@@ -1,72 +1,34 @@
 package com.example.closetscore.ui.screens
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Camera
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.outlined.CameraAlt
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.closetscore.data.Item
+import com.example.closetscore.db.BrandType
 import com.example.closetscore.db.ItemCategory
-import com.example.closetscore.db.ItemEntity
+import com.example.closetscore.db.MaterialType
 import com.example.closetscore.ui.AppViewModelProvider
-import com.example.closetscore.ui.components.AddImage
-import com.example.closetscore.ui.components.BasicInputField
-import com.example.closetscore.ui.components.CategorySelection
-import com.example.closetscore.ui.components.DatePickerField
-import com.example.closetscore.ui.components.ImageSelector
-import com.example.closetscore.ui.components.ItemCard
-import com.example.closetscore.ui.components.StepperRow
-import com.example.closetscore.ui.components.SwitchRow
-import com.example.closetscore.ui.theme.DarkGrey
-import com.example.closetscore.ui.theme.Grey
-import com.example.closetscore.ui.theme.White
+import com.example.closetscore.ui.components.*
+import com.example.closetscore.ui.theme.*
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalDate
@@ -85,6 +47,7 @@ fun ItemCreateScreen(
             navigateBack()
         }
     }
+
     AnimatedContent(
         targetState = isSuccess,
         transitionSpec = {
@@ -113,7 +76,7 @@ fun SuccessView() {
         Icon(
             imageVector = Icons.Default.CheckCircle,
             contentDescription = "Success",
-            tint = Color(0xFF4CAF50),
+            tint = Green, // Uses your theme Green
             modifier = Modifier.size(120.dp)
         )
         Text(
@@ -123,17 +86,19 @@ fun SuccessView() {
         )
     }
 }
+
 @Composable
 fun AddItemGrid(itemViewModel: ItemViewModel, onSuccess: () -> Unit) {
     var name by remember { mutableStateOf("") }
     var category by remember { mutableStateOf<ItemCategory?>(null) }
-    var brand by remember { mutableStateOf("") }
+    var brandName by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var isSecondHand by remember { mutableStateOf(false) }
     var wearCount by remember { mutableIntStateOf(0) }
     var photoUri by remember { mutableStateOf("") }
-    var store by remember { mutableStateOf("") }
-    var date by remember { mutableStateOf("") }
+    var dateString by remember { mutableStateOf("") }
+    var brandType by remember { mutableStateOf(BrandType.STANDARD) }
+    var material by remember { mutableStateOf(MaterialType.MIXED) }
 
     Column(
         modifier = Modifier
@@ -142,20 +107,16 @@ fun AddItemGrid(itemViewModel: ItemViewModel, onSuccess: () -> Unit) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Column {
+        // Header
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = "Add New Item",
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(bottom = 16.dp)
-                    .align(Alignment.CenterHorizontally)
             )
-
-            HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 1.dp,
-                color = DarkGrey
-            )
+            HorizontalDivider(thickness = 1.dp, color = DarkGrey)
         }
+
         AddImage(
             photoUri = photoUri,
             onUriChange = { newUri -> photoUri = newUri }
@@ -168,41 +129,42 @@ fun AddItemGrid(itemViewModel: ItemViewModel, onSuccess: () -> Unit) {
             onCategoryChange = { category = it }
         )
 
-        MidSection(
+        PurchaseSection(
             price = price,
             onPriceChange = { price = it },
-            date = date,
-            onDateSelected = { date = it },
-            brand = brand,
-            onBrandChange = { brand = it },
-            store = store,
-            onStoreChange = { store = it }
+            date = dateString,
+            onDateSelected = { dateString = it },
+            brandName = brandName,
+            onBrandChange = { brandName = it }
+        )
+
+        ScoringSection(
+            brandType = brandType,
+            onBrandTypeChange = { brandType = it },
+            material = material,
+            onMaterialChange = { material = it },
+            isSecondHand = isSecondHand,
+            onSecondHandChange = { isSecondHand = it }
         )
 
         TimesWornSection(
-            name = "Times Worn",
             wearCount = wearCount,
             onWearChange = { wearCount = it }
-        )
-
-        ThriftSection(
-            name = "Thrifted / Second-hand",
-            isSecondHand = isSecondHand,
-            onBoolChange = { isSecondHand = it }
         )
 
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = 16.dp, bottom = 32.dp),
             enabled = name.isNotBlank() && category != null,
+            colors = ButtonDefaults.buttonColors(containerColor = Red),
             onClick = {
                 val finalPrice = price.toDoubleOrNull() ?: 0.0
 
-                val finalDate = if (date.isNotBlank()) {
+                val finalDate = if (dateString.isNotBlank()) {
                     try {
                         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                        LocalDate.parse(date, formatter)
+                        LocalDate.parse(dateString, formatter)
                     } catch (e: Exception) {
                         LocalDate.now()
                     }
@@ -211,23 +173,25 @@ fun AddItemGrid(itemViewModel: ItemViewModel, onSuccess: () -> Unit) {
                 }
 
                 if (category != null) {
-                    val newItem = ItemEntity(
+                    val newItem = Item(
                         name = name,
                         category = category!!,
                         price = finalPrice,
-                        date = finalDate,
-                        brand = brand,
-                        store = store,
+                        dateAcquired = finalDate,
+                        brandName = brandName.ifBlank { null },
+                        brandType = brandType,
+                        material = material,
                         isSecondHand = isSecondHand,
                         wearCount = wearCount,
                         photoUri = photoUri.ifBlank { null }
                     )
+
                     itemViewModel.addItem(newItem)
                     onSuccess()
                 }
             }
         ) {
-            Text("Add to Closet")
+            Text("Add to Closet", modifier = Modifier.padding(8.dp))
         }
     }
 }
@@ -239,149 +203,113 @@ fun NameSection(
     category: ItemCategory?,
     onCategoryChange: (ItemCategory?) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .background(
-                color = White,
-                shape = RoundedCornerShape(16.dp),
-
-            )
-            .padding(12.dp)
-    ) {
+    SectionContainer {
         BasicInputField(
             label = "Item Name",
             value = name,
             onValueChange = onNameChange
         )
-        CategorySelection(
-            label = "Category",
-            selectedCategory = category,
-            onCategorySelected = onCategoryChange
+        LabelText("Category")
+        val categoryOptions = ItemCategory.entries.map { it.name.replace("_", " ") }
+        SegmentedEnumSelector(
+            options = categoryOptions,
+            selectedOptionIndex = category?.ordinal ?: -1,
+            onOptionSelected = { index ->
+                onCategoryChange(ItemCategory.entries[index])
+            }
         )
+
     }
 }
 
-
-
 @Composable
-fun TimesWornSection(
-    name: String,
-    wearCount: Int,
-    onWearChange: (Int) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .background(
-                color = White,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .border(
-                width = 1.dp,
-                color = Grey,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .padding(12.dp)
-    ) {
-        StepperRow(
-            label = name,
-            value = wearCount,
-            onValueChange = onWearChange
-        )
-    }
-}
-
-
-
-@Composable
-fun MidSection(
+fun PurchaseSection(
     price: String,
     onPriceChange: (String) -> Unit,
     date: String,
     onDateSelected: (String) -> Unit,
-    brand: String,
-    onBrandChange: (String) -> Unit,
-    store: String,
-    onStoreChange: (String) -> Unit
+    brandName: String,
+    onBrandChange: (String) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .background(
-                color = White,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .border(
-                width = 1.dp,
-                color = Grey,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .padding(12.dp)
-    ) {
-        BasicInputField(
+    SectionContainer {
+        PriceInputField(
             label = "Item Price",
             value = price,
             onValueChange = onPriceChange,
-            keyboardType = KeyboardType.Decimal
         )
-
         DatePickerField(
             label = "Purchase Date",
             value = date,
             onDateSelected = onDateSelected
         )
-
         BasicInputField(
-            label = "Brand Name",
-            value = brand,
+            label = "Brand (Optional)",
+            value = brandName,
             onValueChange = onBrandChange
         )
+    }
+}
+@Composable
+fun ScoringSection(
+    brandType: BrandType,
+    onBrandTypeChange: (BrandType) -> Unit,
+    material: MaterialType,
+    onMaterialChange: (MaterialType) -> Unit,
+    isSecondHand: Boolean,
+    onSecondHandChange: (Boolean) -> Unit
+) {
+    SectionContainer {
+        LabelText("Brand Type")
 
-        BasicInputField(
-            label = "Store",
-            value = store,
-            onValueChange = onStoreChange
+        val brandOptions = BrandType.entries.map {
+            when(it) {
+                BrandType.ECO_SUSTAINABLE -> "Eco / Ethical"
+                BrandType.STANDARD -> "Standard"
+                BrandType.FAST_FASHION -> "Fast Fashion"
+            }
+        }
+
+        SegmentedEnumSelector(
+            options = brandOptions,
+            selectedOptionIndex = brandType.ordinal,
+            onOptionSelected = { index ->
+                onBrandTypeChange(BrandType.entries[index])
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LabelText("Material")
+
+        val materialOptions = MaterialType.entries.map {
+            it.name.lowercase().replaceFirstChar { char -> char.uppercase() }
+        }
+
+        SegmentedEnumSelector(
+            options = materialOptions,
+            selectedOptionIndex = material.ordinal,
+            onOptionSelected = { index ->
+                onMaterialChange(MaterialType.entries[index])
+            }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        SwitchRow(
+            label = "Thrifted / Second-hand",
+            checked = isSecondHand,
+            onCheckedChange = onSecondHandChange
         )
     }
 }
 
 @Composable
-fun ThriftSection(
-    name: String,
-    isSecondHand: Boolean,
-    onBoolChange: (Boolean) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .background(
-                color = White,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .border(
-                width = 1.dp,
-                color = Grey,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .padding(12.dp)
-    ) {
-        SwitchRow(
-            label = name,
-            checked = isSecondHand,
-            onCheckedChange = onBoolChange
+fun TimesWornSection(wearCount: Int, onWearChange: (Int) -> Unit) {
+    SectionContainer {
+        StepperRow(
+            label = "Times Worn",
+            value = wearCount,
+            onValueChange = onWearChange
         )
     }
 }
