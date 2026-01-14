@@ -1,5 +1,6 @@
 package com.example.closetscore.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -13,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
@@ -28,13 +28,15 @@ import coil.request.ImageRequest
 import com.example.closetscore.data.Item
 import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.ui.AppViewModelProvider
-import com.example.closetscore.ui.navigation.Screen
+import com.example.closetscore.ui.theme.Black
+import com.example.closetscore.ui.theme.DarkGrey
+import com.example.closetscore.ui.theme.DarkestGrey
 import com.example.closetscore.ui.theme.Green
 import com.example.closetscore.ui.theme.Grey
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 
-@OptIn(ExperimentalFoundationApi::class) // Notwendig für combinedClickable
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemCard(item: Item, onClick: () -> Unit, itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -46,19 +48,20 @@ fun ItemCard(item: Item, onClick: () -> Unit, itemViewModel: ItemViewModel = vie
             .aspectRatio(0.8f)
             .combinedClickable(
                 onClick = {
-                    println("Clicked: ${item.name}") // Removed the comma here
-                    onClick() // Call the lambda passed from Home.kt
+                    println("Clicked: ${item.name}")
+                    onClick()
                 },
                 onLongClick = {
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     showDeleteDialog = true
                 }
             ),
+        border = BorderStroke(1.dp, Grey),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 2.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Grey
+            containerColor = White
         )
     )
     {
@@ -68,7 +71,7 @@ fun ItemCard(item: Item, onClick: () -> Unit, itemViewModel: ItemViewModel = vie
                 .fillMaxWidth()
                 .aspectRatio(1.2f)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.White)
+                .background(White)
         ) {
             if (item.photoUri != null) {
                 AsyncImage(
@@ -109,7 +112,7 @@ fun ItemCard(item: Item, onClick: () -> Unit, itemViewModel: ItemViewModel = vie
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = Green,
-                    contentColor = Color.White
+                    contentColor = White
                 )
             ) {
                 Icon(
@@ -166,19 +169,19 @@ fun StyledTextCard(itemEntity: Item) {
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             lineHeight = 22.sp,
-            color = Color.Black
+            color = Black
         )
         Text(
             text = itemEntity.category.toString(),
             fontSize = 12.sp,
             lineHeight = 22.sp,
-            color = Color.Gray
+            color = DarkGrey
         )
         Text(
             text = itemEntity.wearCount.toString(),
             fontSize = 12.sp,
             lineHeight = 22.sp,
-            color = Color.DarkGray
+            color = DarkestGrey
         )
     }
 }

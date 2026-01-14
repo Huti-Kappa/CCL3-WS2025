@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -63,6 +64,7 @@ import com.example.closetscore.ui.components.ImageSelector
 import com.example.closetscore.ui.components.ItemCard
 import com.example.closetscore.ui.components.StepperRow
 import com.example.closetscore.ui.components.SwitchRow
+import com.example.closetscore.ui.theme.DarkGrey
 import com.example.closetscore.ui.theme.Grey
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
@@ -140,12 +142,20 @@ fun AddItemGrid(itemViewModel: ItemViewModel, onSuccess: () -> Unit) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Text(
-            text = "Add New Item",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
+        Column {
+            Text(
+                text = "Add New Item",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(bottom = 16.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
 
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 1.dp,
+                color = DarkGrey
+            )
+        }
         AddImage(
             photoUri = photoUri,
             onUriChange = { newUri -> photoUri = newUri }
