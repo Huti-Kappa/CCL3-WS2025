@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -19,6 +20,9 @@ interface TemplateDao {
     @Query("SELECT * FROM templates WHERE status = 'ACTIVE'")
     fun getAllTemplates(): Flow<List<TemplateEntity>>
 
+    @Query("UPDATE templates SET wearCount = wearCount + 1 WHERE id = :templateId")
+    suspend fun incrementWearCount(templateId: Int)
+
     @Transaction
     @Query("SELECT * FROM templates WHERE status = 'ACTIVE'")
     fun getAllTemplatesWithItems(): Flow<List<TemplateWithItems>>
@@ -27,7 +31,9 @@ interface TemplateDao {
     @Query("SELECT * FROM templates WHERE id = :templateId")
     suspend fun getTemplateWithItems(templateId: Int): TemplateWithItems?
 
-    // Methods to manage template-item relationships
+    @Update
+    suspend fun updateTemplate(templateEntity: TemplateEntity)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTemplateItemCrossRef(crossRef: TemplateItemCrossRef)
 

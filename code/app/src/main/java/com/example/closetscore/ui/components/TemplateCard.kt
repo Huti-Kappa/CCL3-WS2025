@@ -37,6 +37,7 @@ fun TemplateCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {

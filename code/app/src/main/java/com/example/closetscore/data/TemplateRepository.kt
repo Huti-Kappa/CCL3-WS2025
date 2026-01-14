@@ -13,6 +13,7 @@ class TemplateRepository(private val templateDao: TemplateDao) {
                 id = entity.id,
                 name = entity.name,
                 date = entity.date,
+                wearCount = entity.wearCount,
                 status = entity.status
             )
         }
@@ -24,8 +25,15 @@ class TemplateRepository(private val templateDao: TemplateDao) {
         return templateDao.addTemplate(templateEntity)
     }
 
+    suspend fun updateTemplate(templateEntity: TemplateEntity) {
+        templateDao.updateTemplate(templateEntity)
+    }
+
     suspend fun deleteTemplate(templateEntity: TemplateEntity) {
         templateDao.deleteTemplate(templateEntity)
+    }
+    suspend fun incrementWearCount(templateId: Int){
+        templateDao.incrementWearCount(templateId)
     }
 
     suspend fun addItemToTemplate(templateId: Int, itemId: Int) {
@@ -35,6 +43,8 @@ class TemplateRepository(private val templateDao: TemplateDao) {
     suspend fun removeItemFromTemplate(templateId: Int, itemId: Int) {
         templateDao.removeItemFromTemplate(templateId, itemId)
     }
+
+
 
     suspend fun getTemplateWithItems(templateId: Int) = templateDao.getTemplateWithItems(templateId)
 }

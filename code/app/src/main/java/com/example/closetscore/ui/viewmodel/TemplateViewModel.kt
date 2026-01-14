@@ -13,22 +13,15 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class TemplateViewModel(
-    private val templateRepository: TemplateRepository
+    val repository: TemplateRepository
 ) : ViewModel() {
 
     val templatesWithItems: StateFlow<List<TemplateWithItems>> =
-        templateRepository.templatesWithItems.stateIn(
+        repository.templatesWithItems.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
-
-
-    fun getTemplateWithItems(templateId: Int){
-        viewModelScope.launch{
-            templateRepository.getTemplateWithItems(templateId)
-        }
-    }
 
     fun createTemplate(
         name: String,
@@ -37,7 +30,7 @@ class TemplateViewModel(
     ) {
         viewModelScope.launch {
             try {
-                val templateId = templateRepository.addTemplate(
+                val templateId = repository.addTemplate(
                     TemplateEntity(
                         name = name,
                         date = LocalDate.now(),
@@ -46,7 +39,7 @@ class TemplateViewModel(
                 )
 
                 itemIds.forEach { itemId ->
-                    templateRepository.addItemToTemplate(templateId.toInt(), itemId)
+                    repository.addItemToTemplate(templateId.toInt(), itemId)
                 }
 
                 onSuccess(templateId.toInt())
@@ -59,7 +52,17 @@ class TemplateViewModel(
     fun deleteTemplate(templateId: Int, templateEntity: TemplateEntity) {
         viewModelScope.launch {
             try {
-                templateRepository.deleteTemplate(templateEntity)
+                repository.deleteTemplate(templateEntity)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun incrementTemplateWearCount(templateId: Int) {
+        viewModelScope.launch {
+            try {
+                repository.incrementWearCount(templateId)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -69,17 +72,28 @@ class TemplateViewModel(
     fun addItemToTemplate(templateId: Int, itemId: Int) {
         viewModelScope.launch {
             try {
-                templateRepository.addItemToTemplate(templateId, itemId)
+                repository.addItemToTemplate(templateId, itemId)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
+    fun updateTemplate(templateEntity: TemplateEntity) {
+        viewModelScope.launch {
+            try {
+                repository.updateTemplate(templateEntity)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
     fun removeItemFromTemplate(templateId: Int, itemId: Int) {
         viewModelScope.launch {
             try {
-                templateRepository.removeItemFromTemplate(templateId, itemId)
+                repository.removeItemFromTemplate(templateId, itemId)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
