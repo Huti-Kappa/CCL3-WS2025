@@ -107,7 +107,6 @@ fun ItemCard(
                 StyledTextCard(item)
             }
 
-            // "Add Wear" Button
             FilledIconButton(
                 onClick = { itemViewModel.incrementWearCount(item.id) },
                 modifier = Modifier.size(42.dp),
@@ -126,7 +125,6 @@ fun ItemCard(
         }
     }
 
-    // --- Delete Dialog ---
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
