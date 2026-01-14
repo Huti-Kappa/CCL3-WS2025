@@ -88,18 +88,17 @@ fun EditItemScreen(
             val loadedItem = itemViewModel.repository.getItemById(itemId)
             originalItem = loadedItem
 
-            if (loadedItem != null) {
-                name = loadedItem.name
-                brandName = loadedItem.brandName ?: ""
-                brandType = loadedItem.brandType
-                material = loadedItem.material
-                price = loadedItem.price.toString()
-                category = loadedItem.category
-                isSecondHand = loadedItem.isSecondHand
-                wearCount = loadedItem.wearCount
-                photoUri = loadedItem.photoUri ?: ""
-                dateString = loadedItem.dateAcquired.format(dateFormatter)
-            }
+            name = loadedItem.name
+            brandName = loadedItem.brandName ?: ""
+            brandType = loadedItem.brandType
+            material = loadedItem.material
+            price = loadedItem.price.toString()
+            category = loadedItem.category
+            isSecondHand = loadedItem.isSecondHand
+            wearCount = loadedItem.wearCount
+            photoUri = loadedItem.photoUri ?: ""
+            dateString = loadedItem.dateAcquired.format(dateFormatter)
+
             isLoading = false
         }
     }

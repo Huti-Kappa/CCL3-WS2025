@@ -1,5 +1,6 @@
 package com.example.closetscore.ui.navigation
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -13,6 +14,7 @@ import com.example.closetscore.ui.screens.HomeScreen
 import com.example.closetscore.ui.screens.ItemCreateScreen
 import com.example.closetscore.ui.screens.ItemDetailScreen
 import com.example.closetscore.ui.screens.OutfitsScreen
+import com.example.closetscore.ui.screens.StatsScreen
 import com.example.closetscore.ui.screens.TemplateCreateScreen
 import com.example.closetscore.ui.screens.TemplateDetailScreen
 
@@ -39,10 +41,9 @@ fun Navigation(
         }
 
         composable(Screen.Stats.route) {
-            DummyScreen("Statistics Screen")
+            StatsScreen(navController = navController)
         }
 
-        // --- ERSTELLEN ---
         composable(Screen.Create.route) {
             ItemCreateScreen(navigateBack = { navController.popBackStack() })
         }
@@ -97,5 +98,5 @@ fun Navigation(
 
 @Composable
 fun DummyScreen(text: String) {
-    androidx.compose.material3.Text(text = text)
+    Text(text = text)
 }
