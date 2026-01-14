@@ -2,11 +2,13 @@ package com.example.closetscore.ui.components
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -410,4 +412,17 @@ fun LabelText(text: String) {
         color = Black,
         modifier = Modifier.padding(bottom = 6.dp)
     )
+}
+
+@Composable
+fun SectionContainer(content: @Composable ColumnScope.() -> Unit) {
+    Column(
+        modifier = Modifier
+            .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
+            .background(color = White, shape = RoundedCornerShape(16.dp))
+            .border(width = 1.dp, color = Grey, shape = RoundedCornerShape(16.dp))
+            .padding(16.dp)
+    ) {
+        content()
+    }
 }

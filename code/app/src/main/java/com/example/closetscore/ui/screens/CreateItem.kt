@@ -313,17 +313,3 @@ fun TimesWornSection(wearCount: Int, onWearChange: (Int) -> Unit) {
         )
     }
 }
-
-
-@Composable
-fun SectionContainer(content: @Composable ColumnScope.() -> Unit) {
-    Column(
-        modifier = Modifier
-            .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
-            .background(color = White, shape = RoundedCornerShape(16.dp))
-            .border(width = 1.dp, color = Grey, shape = RoundedCornerShape(16.dp))
-            .padding(16.dp)
-    ) {
-        content()
-    }
-}
