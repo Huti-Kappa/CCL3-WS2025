@@ -26,6 +26,7 @@ import com.example.closetscore.data.Item
 import com.example.closetscore.db.ItemCategory
 import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.ui.AppViewModelProvider
+import com.example.closetscore.ui.components.HeaderText
 import com.example.closetscore.ui.components.ItemCard
 import com.example.closetscore.ui.components.Score
 import com.example.closetscore.ui.navigation.Screen
@@ -46,11 +47,7 @@ fun ItemGrid(navController: NavController, itemsList: List<Item>) {
         contentPadding = PaddingValues(16.dp)
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
-            Text(
-                text="Hello User",
-                style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+            HeaderText("Hello User")
         }
 
         item(span = { GridItemSpan(maxLineSpan) }) {

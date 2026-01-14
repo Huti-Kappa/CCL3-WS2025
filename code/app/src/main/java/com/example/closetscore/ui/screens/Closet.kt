@@ -26,6 +26,7 @@ import com.example.closetscore.ui.components.ItemCard
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import com.example.closetscore.ui.navigation.Screen
 import androidx.navigation.NavController
+import com.example.closetscore.ui.components.HeaderText
 
 
 @Composable
@@ -44,11 +45,7 @@ fun ClosetGrid(navController: NavController, itemViewModel: ItemViewModel = view
         contentPadding = PaddingValues(16.dp)
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
-            Text(
-                text="Your Closet",
-                style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+            HeaderText("Your Closet")
         }
         items(itemsList) { item ->
             ItemCard(item = item,
