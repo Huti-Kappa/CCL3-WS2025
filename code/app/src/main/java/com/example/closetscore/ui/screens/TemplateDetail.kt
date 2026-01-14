@@ -1,6 +1,5 @@
 package com.example.closetscore.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -160,7 +159,6 @@ fun TemplateDetailScreen(
                                 }
                             }
 
-
                             Card(
                                 modifier = Modifier.weight(1f),
                                 colors = CardDefaults.cardColors(
@@ -211,7 +209,6 @@ fun TemplateDetailScreen(
                         }
                     }
 
-
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
                             text = "Items in this Outfit",
@@ -220,7 +217,6 @@ fun TemplateDetailScreen(
                             modifier = Modifier.padding(top = 8.dp)
                         )
                     }
-
 
                     if (template.items.isEmpty()) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -244,13 +240,17 @@ fun TemplateDetailScreen(
                                     id = item.id,
                                     name = item.name,
                                     photoUri = item.photoUri,
-                                    brand = item.brand,
+
+                                    brandName = item.brandName,
+                                    brandType = item.brandType,
+                                    material = item.material,
+
                                     category = item.category,
                                     price = item.price,
                                     isSecondHand = item.isSecondHand,
                                     wearCount = item.wearCount,
-                                    store = item.store,
-                                    date = item.date,
+
+                                    dateAcquired = item.dateAcquired,
                                     status = item.status
                                 ),
                                 onClick = { /* Optional: Navigate to item detail */ }
@@ -303,7 +303,6 @@ fun TemplateDetailScreen(
                             onClick = {
                                 templateViewModel.incrementTemplateWearCount(templateId)
 
-
                                 template.items.forEach { item ->
                                     itemViewModel.incrementWearCount(item.id)
                                 }
@@ -329,7 +328,6 @@ fun TemplateDetailScreen(
                             )
                         }
                     }
-
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Spacer(modifier = Modifier.height(16.dp))
