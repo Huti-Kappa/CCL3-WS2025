@@ -48,79 +48,76 @@ fun BottomNavBar(
         modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.BottomCenter
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(24.dp)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                Black.copy(alpha = 0.10f)
-                            )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(24.dp)
+                .align(Alignment.TopCenter)
+                .offset(y = (-24).dp)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Black.copy(alpha = 0.1f)
                         )
                     )
-            )
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(White)
-            ) {
-                HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth(),
-                    thickness = 1.dp,
-                    color = DarkGrey
                 )
+        )
 
-                NavigationBar(
-                    modifier = Modifier,
-                    containerColor = White,
-                    tonalElevation = 0.dp
-                ) {
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val currentRoute = navBackStackEntry?.destination?.route
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(White)
+        ) {
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 1.dp,
+                color = DarkGrey
+            )
 
-                    Spacer(modifier = Modifier.weight(0.2f))
+            NavigationBar(
+                modifier = Modifier,
+                containerColor = White,
+                tonalElevation = 0.dp
+            ) {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
 
-                    items.forEachIndexed { index, screen ->
-                        // Platzhalter für den FAB
-                        if (index == 2) {
-                            NavigationBarItem(
-                                selected = false,
-                                onClick = { },
-                                icon = { },
-                                enabled = false
-                            )
-                        }
+                Spacer(modifier = Modifier.weight(0.2f))
 
+                items.forEachIndexed { index, screen ->
+                    if (index == 2) {
                         NavigationBarItem(
-                            label = { Text(screen.title) },
-                            icon = {
-                                Icon(
-                                    imageVector = screen.icon,
-                                    contentDescription = screen.title
-                                )
-                            },
-                            selected = currentRoute == screen.route,
-                            onClick = {
-                                navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
+                            selected = false,
+                            onClick = { },
+                            icon = { },
+                            enabled = false
                         )
                     }
-                    Spacer(modifier = Modifier.weight(0.2f))
+
+                    NavigationBarItem(
+                        label = { Text(screen.title) },
+                        icon = {
+                            Icon(
+                                imageVector = screen.icon,
+                                contentDescription = screen.title
+                            )
+                        },
+                        selected = currentRoute == screen.route,
+                        onClick = {
+                            navController.navigate(screen.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    )
                 }
+                Spacer(modifier = Modifier.weight(0.2f))
             }
         }
-
         FloatingActionButton(
             onClick = {
                 navController.navigate(Screen.Create.route) {
@@ -136,6 +133,7 @@ fun BottomNavBar(
             shape = RoundedCornerShape(18.dp),
             modifier = Modifier
                 .align(Alignment.TopCenter)
+                .offset(y = (-22).dp)
                 .size(64.dp)
         ) {
             Icon(

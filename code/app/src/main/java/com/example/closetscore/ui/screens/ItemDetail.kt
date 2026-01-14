@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.closetscore.db.BrandType
 import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.theme.Black
@@ -337,14 +338,16 @@ fun InfoSection(item: ItemEntity) {
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            InfoRow("Brand", item.brand ?: "N/A")
-            InfoRow("Category", item.category.name.replace("_", " "))
-            InfoRow("Price", "€%.2f".format(item.price))
-            InfoRow("Store", item.store ?: "N/A")
-            InfoRow("Purchase Date", item.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-            InfoRow("Second Hand", if (item.isSecondHand) "Yes" else "No")
-            InfoRow("Status", item.status.name.replace("_", " "))
+            InfoRow("Brand", item.brandName ?: "Unknown")
+            InfoRow("Impact", when(item.brandType) {
+                BrandType.ECO_SUSTAINABLE -> "Eco / Ethical"
+                BrandType.FAST_FASHION -> "Fast Fashion"
+                BrandType.STANDARD -> "Standard"
+            })
+            InfoRow("Material", item.material.name.lowercase().replaceFirstChar { it.uppercase() })
+            InfoRow("Category", item.category.name)
+            InfoRow("Origin", if (item.isSecondHand) "Thrifted (Eco Bonus)" else "Bought New")
+            InfoRow("Acquired", item.dateAcquired.format(DateTimeFormatter.ofPattern("MMM dd, yyyy")))
         }
     }
 }

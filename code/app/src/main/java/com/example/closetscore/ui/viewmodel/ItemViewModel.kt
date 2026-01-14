@@ -2,6 +2,7 @@ package com.example.closetscore.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.closetscore.data.Item
 import com.example.closetscore.data.ItemRepository
 import com.example.closetscore.db.ItemEntity
 import kotlinx.coroutines.flow.Flow
@@ -27,9 +28,9 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
         }
     }
 
-    fun addItem(itemEntity: ItemEntity) {
-        viewModelScope.launch{
-            repository.addItem(itemEntity)
+    fun addItem(item: Item) {
+        viewModelScope.launch {
+            repository.addItem(item)
         }
     }
 
