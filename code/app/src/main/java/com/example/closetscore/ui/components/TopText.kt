@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun HeaderText(text: String){
     Text(
-        text="text",
+        text=text,
         style = MaterialTheme.typography.displaySmall,
         modifier = Modifier.padding(bottom = 8.dp)
     )
