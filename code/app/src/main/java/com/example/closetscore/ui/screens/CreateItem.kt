@@ -209,11 +209,16 @@ fun NameSection(
             value = name,
             onValueChange = onNameChange
         )
-        CategorySelection(
-            label = "Category",
-            selectedCategory = category,
-            onCategorySelected = onCategoryChange
+        LabelText("Category")
+        val categoryOptions = ItemCategory.entries.map { it.name.replace("_", " ") }
+        SegmentedEnumSelector(
+            options = categoryOptions,
+            selectedOptionIndex = category?.ordinal ?: -1,
+            onOptionSelected = { index ->
+                onCategoryChange(ItemCategory.entries[index])
+            }
         )
+
     }
 }
 
@@ -244,7 +249,6 @@ fun PurchaseSection(
         )
     }
 }
-
 @Composable
 fun ScoringSection(
     brandType: BrandType,
@@ -255,59 +259,42 @@ fun ScoringSection(
     onSecondHandChange: (Boolean) -> Unit
 ) {
     SectionContainer {
-        Text(
-            text = "Impact Details",
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            color = DarkestGrey,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        // Brand Tier Selector
         LabelText("Brand Type")
+
+        val brandOptions = BrandType.entries.map {
+            when(it) {
+                BrandType.ECO_SUSTAINABLE -> "Eco / Ethical"
+                BrandType.STANDARD -> "Standard"
+                BrandType.FAST_FASHION -> "Fast Fashion"
+            }
+        }
+
         SegmentedEnumSelector(
-            options = listOf("Eco/Ethical", "Standard", "Fast Fashion"),
-            selectedOptionIndex = when(brandType) {
-                BrandType.ECO_SUSTAINABLE -> 0
-                BrandType.STANDARD -> 1
-                BrandType.FAST_FASHION -> 2
-            },
+            options = brandOptions,
+            selectedOptionIndex = brandType.ordinal,
             onOptionSelected = { index ->
-                onBrandTypeChange(
-                    when(index) {
-                        0 -> BrandType.ECO_SUSTAINABLE
-                        1 -> BrandType.STANDARD
-                        else -> BrandType.FAST_FASHION
-                    }
-                )
+                onBrandTypeChange(BrandType.entries[index])
             }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Material Selector
         LabelText("Material")
+
+        val materialOptions = MaterialType.entries.map {
+            it.name.lowercase().replaceFirstChar { char -> char.uppercase() }
+        }
+
         SegmentedEnumSelector(
-            options = listOf("Natural", "Mixed", "Synthetic"),
-            selectedOptionIndex = when(material) {
-                MaterialType.NATURAL -> 0
-                MaterialType.MIXED -> 1
-                MaterialType.SYNTHETIC -> 2
-            },
+            options = materialOptions,
+            selectedOptionIndex = material.ordinal,
             onOptionSelected = { index ->
-                onMaterialChange(
-                    when(index) {
-                        0 -> MaterialType.NATURAL
-                        1 -> MaterialType.MIXED
-                        else -> MaterialType.SYNTHETIC
-                    }
-                )
+                onMaterialChange(MaterialType.entries[index])
             }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Thrift Switch
         SwitchRow(
             label = "Thrifted / Second-hand",
             checked = isSecondHand,
@@ -338,54 +325,5 @@ fun SectionContainer(content: @Composable ColumnScope.() -> Unit) {
             .padding(16.dp)
     ) {
         content()
-    }
-}
-
-@Composable
-fun LabelText(text: String) {
-    Text(
-        text = text,
-        fontSize = 12.sp,
-        color = DarkGrey,
-        modifier = Modifier.padding(bottom = 6.dp)
-    )
-}
-
-@Composable
-fun SegmentedEnumSelector(
-    options: List<String>,
-    selectedOptionIndex: Int,
-    onOptionSelected: (Int) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(Grey.copy(alpha = 0.3f))
-            .padding(2.dp)
-    ) {
-        options.forEachIndexed { index, text ->
-            val isSelected = index == selectedOptionIndex
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(if (isSelected) White else Color.Transparent)
-                    .clickable { onOptionSelected(index) }
-                    .then(
-                        if (isSelected) Modifier.shadow(1.dp, RoundedCornerShape(6.dp)) else Modifier
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = text,
-                    fontSize = 12.sp,
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                    color = if (isSelected) Black else DarkGrey
-                )
-            }
-        }
     }
 }

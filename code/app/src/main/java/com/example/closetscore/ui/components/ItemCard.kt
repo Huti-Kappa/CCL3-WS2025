@@ -34,6 +34,7 @@ import com.example.closetscore.ui.theme.DarkGrey
 import com.example.closetscore.ui.theme.DarkestGrey
 import com.example.closetscore.ui.theme.Green
 import com.example.closetscore.ui.theme.Grey
+import com.example.closetscore.ui.theme.LightGreen
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 
@@ -65,12 +66,11 @@ fun ItemCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = White)
     ) {
-        // --- Image Section ---
         Box(
             modifier = Modifier
                 .padding(4.dp)
                 .fillMaxWidth()
-                .weight(1f) // Let image take available space
+                .weight(1f)
                 .clip(RoundedCornerShape(12.dp))
                 .background(White)
         ) {
@@ -88,7 +88,7 @@ fun ItemCard(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Green.copy(alpha = 0.2f)), // Softer placeholder
+                        .background(LightGreen.copy(alpha = 0.2f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(text = "No Image", color = DarkGrey, fontSize = 12.sp)
@@ -96,7 +96,6 @@ fun ItemCard(
             }
         }
 
-        // --- Info Section ---
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -111,7 +110,7 @@ fun ItemCard(
             // "Add Wear" Button
             FilledIconButton(
                 onClick = { itemViewModel.incrementWearCount(item.id) },
-                modifier = Modifier.size(42.dp), // Slightly smaller for better proportion
+                modifier = Modifier.size(42.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = Green,
@@ -136,21 +135,19 @@ fun ItemCard(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        // MAP UI ITEM -> DB ENTITY FOR DELETION
                         val ent = ItemEntity(
                             id = item.id,
                             name = item.name,
                             photoUri = item.photoUri,
-                            brandName = item.brandName, // Updated
-                            brandType = item.brandType, // New
-                            material = item.material,   // New
+                            brandName = item.brandName,
+                            brandType = item.brandType,
+                            material = item.material,
                             category = item.category,
                             price = item.price,
                             isSecondHand = item.isSecondHand,
                             wearCount = item.wearCount,
-                            dateAcquired = item.dateAcquired, // Updated
+                            dateAcquired = item.dateAcquired,
                             status = item.status
-                            // removed store
                         )
                         itemViewModel.deleteItem(ent)
                         showDeleteDialog = false
@@ -171,7 +168,6 @@ fun ItemCard(
 @Composable
 fun StyledTextCard(item: Item) {
     Column {
-        // Item Name
         Text(
             text = item.name,
             fontSize = 16.sp,
@@ -180,23 +176,23 @@ fun StyledTextCard(item: Item) {
             overflow = TextOverflow.Ellipsis,
             color = Black
         )
-
-        // Brand Name (If exists)
-        if (!item.brandName.isNullOrEmpty()) {
-            Text(
-                text = item.brandName,
-                fontSize = 12.sp,
-                color = DarkGrey,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+        val cpwValue = if (item.wearCount > 0) {
+            item.price / item.wearCount
+        } else {
+            item.price
         }
-
-        // Category & Wear Count
         Text(
-            text = "${item.category} • ${item.wearCount} Wears",
+            text = "${item.wearCount} Wears",
             fontSize = 12.sp,
             color = DarkestGrey
+        )
+        Text(
+            text = "€%.2f".format(cpwValue),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            color = Black
         )
     }
 }

@@ -1,13 +1,17 @@
 package com.example.closetscore.ui.components
 
 import android.app.DatePickerDialog
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -39,16 +43,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.closetscore.db.ItemCategory
 import com.example.closetscore.ui.theme.Black
 import com.example.closetscore.ui.theme.DarkGrey
+import com.example.closetscore.ui.theme.DarkestGrey
 import com.example.closetscore.ui.theme.Grey
+import com.example.closetscore.ui.theme.LightGreen
+import com.example.closetscore.ui.theme.White
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -334,5 +345,69 @@ fun PriceInputField(
         },
         keyboardType = KeyboardType.Decimal,
         prefix = currencySymbol
+    )
+}
+@Composable
+fun SegmentedEnumSelector(
+    options: List<String>,
+    selectedOptionIndex: Int,
+    onOptionSelected: (Int) -> Unit
+) {
+    val selectedColor = LightGreen
+    val unselectedColor = Grey
+    val selectedTextColor = White
+    val unselectedTextColor = DarkestGrey
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        val chunkedOptions = options.chunked(3)
+
+        var globalIndex = 0
+
+        chunkedOptions.forEach { rowOptions ->
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                rowOptions.forEach { text ->
+                    val currentIndex = globalIndex
+                    val isSelected = currentIndex == selectedOptionIndex
+
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(40.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(if (isSelected) selectedColor else unselectedColor)
+                            .clickable { onOptionSelected(currentIndex) }
+                    ) {
+                        Text(
+                            text = text,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = if (isSelected) selectedTextColor else unselectedTextColor
+                        )
+                    }
+                    globalIndex++
+                }
+                if (rowOptions.size < 3) {
+                    repeat(3 - rowOptions.size) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LabelText(text: String) {
+    Text(
+        text = text,
+        color = Black,
+        modifier = Modifier.padding(bottom = 6.dp)
     )
 }
