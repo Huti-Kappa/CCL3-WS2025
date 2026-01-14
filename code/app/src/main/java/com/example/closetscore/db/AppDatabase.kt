@@ -12,7 +12,7 @@ import androidx.room.TypeConverters
         TemplateEntity::class,
         TemplateItemCrossRef::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -29,7 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
             return Instance ?: synchronized(this) {
                 val instance = Room
                     .databaseBuilder(context, AppDatabase::class.java, "closet_database")
-                    .fallbackToDestructiveMigration() // This will clear data on version change
+                    .fallbackToDestructiveMigration(false)
                     .build()
 
                 Instance = instance

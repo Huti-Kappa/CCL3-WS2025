@@ -2,8 +2,8 @@ package com.example.closetscore.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.closetscore.data.Item
 import com.example.closetscore.data.ItemRepository
-import com.example.closetscore.db.ItemCategory
 import com.example.closetscore.db.ItemEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +17,6 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
 
     val itemUiState = repository.items.stateIn(
         viewModelScope,
-        // SharingStarted.WhileSubscribed(5000) controls when the flow starts and stops collecting. 5 sec avoids restarting the flow immediately if a UI rotates or briefly detaches.
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
@@ -27,9 +26,9 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
         }
     }
 
-    fun addItem(itemEntity: ItemEntity) {
-        viewModelScope.launch{
-            repository.addItem(itemEntity)
+    fun addItem(item: Item) {
+        viewModelScope.launch {
+            repository.addItem(item)
         }
     }
 

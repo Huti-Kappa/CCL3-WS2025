@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,7 +39,11 @@ import com.example.closetscore.ui.viewmodel.ItemViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ItemCard(item: Item, onClick: () -> Unit, itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun ItemCard(
+    item: Item,
+    onClick: () -> Unit,
+    itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
 
@@ -57,19 +62,15 @@ fun ItemCard(item: Item, onClick: () -> Unit, itemViewModel: ItemViewModel = vie
                 }
             ),
         border = BorderStroke(1.dp, Grey),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = White
-        )
-    )
-    {
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = White)
+    ) {
+        // --- Image Section ---
         Box(
             modifier = Modifier
                 .padding(4.dp)
                 .fillMaxWidth()
-                .aspectRatio(1.2f)
+                .weight(1f) // Let image take available space
                 .clip(RoundedCornerShape(12.dp))
                 .background(White)
         ) {
@@ -87,28 +88,30 @@ fun ItemCard(item: Item, onClick: () -> Unit, itemViewModel: ItemViewModel = vie
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Green),
+                        .background(Green.copy(alpha = 0.2f)), // Softer placeholder
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "No Image", color = White)
+                    Text(text = "No Image", color = DarkGrey, fontSize = 12.sp)
                 }
             }
         }
+
+        // --- Info Section ---
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = 8.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Box(modifier = Modifier.weight(1f)) {
                 StyledTextCard(item)
             }
+
+            // "Add Wear" Button
             FilledIconButton(
-                onClick = {
-                    itemViewModel.incrementWearCount(item.id)
-                },
-                modifier = Modifier.size(48.dp),
+                onClick = { itemViewModel.incrementWearCount(item.id) },
+                modifier = Modifier.size(42.dp), // Slightly smaller for better proportion
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = Green,
@@ -123,6 +126,8 @@ fun ItemCard(item: Item, onClick: () -> Unit, itemViewModel: ItemViewModel = vie
             }
         }
     }
+
+    // --- Delete Dialog ---
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -131,19 +136,21 @@ fun ItemCard(item: Item, onClick: () -> Unit, itemViewModel: ItemViewModel = vie
             confirmButton = {
                 TextButton(
                     onClick = {
-                        var ent = ItemEntity(
-                            item.id,
-                            item.name,
-                            item.photoUri,
-                            item.brand,
-                            item.category,
-                            item.price,
-                            item.isSecondHand,
-                            item.wearCount,
-                            item.store,
-                            item.date,
-                            item.status,
-
+                        // MAP UI ITEM -> DB ENTITY FOR DELETION
+                        val ent = ItemEntity(
+                            id = item.id,
+                            name = item.name,
+                            photoUri = item.photoUri,
+                            brandName = item.brandName, // Updated
+                            brandType = item.brandType, // New
+                            material = item.material,   // New
+                            category = item.category,
+                            price = item.price,
+                            isSecondHand = item.isSecondHand,
+                            wearCount = item.wearCount,
+                            dateAcquired = item.dateAcquired, // Updated
+                            status = item.status
+                            // removed store
                         )
                         itemViewModel.deleteItem(ent)
                         showDeleteDialog = false
@@ -162,25 +169,33 @@ fun ItemCard(item: Item, onClick: () -> Unit, itemViewModel: ItemViewModel = vie
 }
 
 @Composable
-fun StyledTextCard(itemEntity: Item) {
-    Column() {
+fun StyledTextCard(item: Item) {
+    Column {
+        // Item Name
         Text(
-            text = itemEntity.name,
-            fontSize = 18.sp,
+            text = item.name,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            lineHeight = 22.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             color = Black
         )
+
+        // Brand Name (If exists)
+        if (!item.brandName.isNullOrEmpty()) {
+            Text(
+                text = item.brandName,
+                fontSize = 12.sp,
+                color = DarkGrey,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        // Category & Wear Count
         Text(
-            text = itemEntity.category.toString(),
+            text = "${item.category} • ${item.wearCount} Wears",
             fontSize = 12.sp,
-            lineHeight = 22.sp,
-            color = DarkGrey
-        )
-        Text(
-            text = itemEntity.wearCount.toString(),
-            fontSize = 12.sp,
-            lineHeight = 22.sp,
             color = DarkestGrey
         )
     }

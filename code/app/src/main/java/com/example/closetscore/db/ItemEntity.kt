@@ -10,28 +10,43 @@ data class ItemEntity(
     val id: Int = 0,
     val name: String,
     val photoUri: String?,
-    val brand: String?,
+    val brandName: String?,
+    val brandType: BrandType,
+    val material: MaterialType,
     val category: ItemCategory,
     val price: Double,
     val isSecondHand: Boolean,
     val wearCount: Int = 0,
-    val store: String?,
-    val date: LocalDate,
+    val dateAcquired: LocalDate,
     val status: ItemStatus = ItemStatus.ACTIVE
 )
 
-enum class ItemCategory {
-    Top,        // T-shirts, Shirts, Blouses, Sweaters
-    Bottom,     // Jeans, Skirts, Shorts, Trousers
-    Shoes,      // Sneakers, Boots, Sandals
-    Outerwear,  // Jackets, Coats, Blazers
-    One_Piece,  // Dresses, Jumpsuits, Overalls
-    Accessory   // Bags, Scarves, Hats, Belts
+enum class BrandType {
+    ECO_SUSTAINABLE, // + Score (e.g. Patagonia, Local Handmade)
+    STANDARD,        // Neutral (e.g. Nike, Levis, Dept Store)
+    FAST_FASHION     // - Score (e.g. Shein, H&M)
 }
+
+enum class MaterialType {
+    NATURAL,    // + Score (Cotton, Wool, Linen - Biodegradable)
+    SYNTHETIC,  // - Score (Polyester, Nylon - Microplastics)
+    MIXED       // Neutral (Hard to recycle)
+}
+
+enum class ItemCategory {
+    Top,
+    Bottom,
+    Shoes,
+    Outerwear,
+    One_Piece,
+    Accessory
+}
+
 enum class ItemStatus {
-    ACTIVE,   // In closet
-    SOLD,     // Good exit (money back)
-    DONATED,  // Good exit (sustainable)
-    TRASHED,  // Bad exit (landfill)
-    WISH_LIST // Optional: If you want to include the "Waiting Room" feature now
+    ACTIVE,
+    SOLD,
+    DONATED,
+    TRASHED,
+    LOST,
+    WISH_LIST
 }

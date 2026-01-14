@@ -316,3 +316,23 @@ fun StepperRow(
         }
     }
 }
+
+@Composable
+fun PriceInputField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String = "Price",
+    currencySymbol: String = "€"
+) {
+    BasicInputField(
+        label = label,
+        value = value,
+        onValueChange = { input ->
+            if (input.isEmpty() || input.matches(Regex("^\\d*\\.?\\d*$"))) {
+                onValueChange(input)
+            }
+        },
+        keyboardType = KeyboardType.Decimal,
+        prefix = currencySymbol
+    )
+}
