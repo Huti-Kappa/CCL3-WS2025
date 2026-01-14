@@ -15,6 +15,7 @@ import com.example.closetscore.ui.screens.OutfitsScreen
 import com.example.closetscore.ui.screens.TemplateCreateScreen
 import com.example.closetscore.ui.screens.TemplateDetailScreen
 
+
 @Composable
 fun Navigation(
     navController: NavHostController,
@@ -58,12 +59,20 @@ fun Navigation(
                 navigateBack = { navController.popBackStack() }
             )
         }
+        composable(
+            route = "${Screen.TemplateDetail.route}/{templateId}",
+            arguments = listOf(navArgument("templateId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val templateId = backStackEntry.arguments?.getInt("templateId") ?: return@composable
+            TemplateDetailScreen(
+                templateId = templateId,
+                navigateBack = { navController.popBackStack() }
+            )
+        }
 
 
     }
 }
-
-
 
 @Composable
 fun DummyScreen(text: String) {

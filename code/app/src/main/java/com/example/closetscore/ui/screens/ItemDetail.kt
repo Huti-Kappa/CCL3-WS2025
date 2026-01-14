@@ -59,7 +59,7 @@ fun ItemDetailScreen(
 ) {
     var item by remember { mutableStateOf<ItemEntity?>(null) }
 
-    // Load the item from database
+
     LaunchedEffect(itemId) {
         withContext(Dispatchers.IO) {
             item = itemViewModel.repository.getItemById(itemId)
@@ -98,7 +98,6 @@ fun ItemDetailScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
             ) {
-                // Item Image
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -131,7 +130,6 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Item Name
                 Text(
                     text = currentItem.name,
                     style = MaterialTheme.typography.headlineMedium,
@@ -140,7 +138,6 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Purchase Price Label
                 Text(
                     text = "Purchase Price",
                     style = MaterialTheme.typography.bodyMedium,
@@ -149,12 +146,10 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Price per Wear and Times Worn Cards
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Price Per Wear Card
                     Card(
                         modifier = Modifier.weight(1f),
                         colors = CardDefaults.cardColors(
@@ -187,7 +182,6 @@ fun ItemDetailScreen(
                         }
                     }
 
-                    // Times Worn Card
                     Card(
                         modifier = Modifier.weight(1f),
                         colors = CardDefaults.cardColors(
@@ -217,8 +211,6 @@ fun ItemDetailScreen(
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
-
-                // Insights Section
                 Text(
                     text = "Insights",
                     style = MaterialTheme.typography.titleLarge,
@@ -226,8 +218,6 @@ fun ItemDetailScreen(
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-
-                // Insight Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -261,16 +251,13 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Additional Info Section
                 InfoSection(currentItem)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // I'm wearing this today Button
                 Button(
                     onClick = {
                         itemViewModel.incrementWearCount(itemId)
-                        // Reload item to show updated count
                         kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
                             item = itemViewModel.repository.getItemById(itemId)
                         }
@@ -294,7 +281,7 @@ fun ItemDetailScreen(
                 Spacer(modifier = Modifier.height(24.dp))
             }
         } ?: run {
-            // Loading state
+
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center

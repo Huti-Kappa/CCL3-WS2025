@@ -19,6 +19,9 @@ interface TemplateDao {
     @Query("SELECT * FROM templates WHERE status = 'ACTIVE'")
     fun getAllTemplates(): Flow<List<TemplateEntity>>
 
+    @Query("UPDATE templates SET wearCount = wearCount + 1 WHERE id = :templateId")
+    suspend fun incrementWearCount(templateId: Int)
+
     @Transaction
     @Query("SELECT * FROM templates WHERE status = 'ACTIVE'")
     fun getAllTemplatesWithItems(): Flow<List<TemplateWithItems>>
@@ -27,7 +30,6 @@ interface TemplateDao {
     @Query("SELECT * FROM templates WHERE id = :templateId")
     suspend fun getTemplateWithItems(templateId: Int): TemplateWithItems?
 
-    // Methods to manage template-item relationships
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTemplateItemCrossRef(crossRef: TemplateItemCrossRef)
 
