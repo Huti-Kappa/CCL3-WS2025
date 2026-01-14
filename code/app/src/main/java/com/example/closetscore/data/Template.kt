@@ -8,5 +8,6 @@ data class Template(
     val name: String,
     val photoUri: String? = null,
     val date: LocalDate,
+    val wearCount: Int = 0,
     val status: ItemStatus = ItemStatus.ACTIVE
 )

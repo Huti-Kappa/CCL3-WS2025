@@ -87,7 +87,7 @@ fun OutfitsScreen(
                         TemplateCard(
                             templateWithItems = templateWithItems,
                             onClick = {
-
+                                navController.navigate("${Screen.TemplateDetail.route}/${templateWithItems.template.id}")
                             }
                         )
                     }

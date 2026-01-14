@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -33,8 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,6 +41,7 @@ import coil.compose.AsyncImage
 import com.example.closetscore.db.BrandType
 import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.ui.AppViewModelProvider
+import com.example.closetscore.ui.theme.Black
 import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
@@ -56,6 +54,7 @@ import java.time.format.DateTimeFormatter
 fun ItemDetailScreen(
     itemId: Int,
     navigateBack: () -> Unit,
+    navigateToEdit: () -> Unit,
     itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     var item by remember { mutableStateOf<ItemEntity?>(null) }
@@ -98,7 +97,6 @@ fun ItemDetailScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
             ) {
-                // Item Image
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -131,7 +129,6 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Item Name
                 Text(
                     text = currentItem.name,
                     style = MaterialTheme.typography.headlineMedium,
@@ -140,7 +137,6 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Purchase Price Label
                 Text(
                     text = "Purchase Price",
                     style = MaterialTheme.typography.bodyMedium,
@@ -149,12 +145,10 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Price per Wear and Times Worn Cards
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Price Per Wear Card
                     Card(
                         modifier = Modifier.weight(1f),
                         colors = CardDefaults.cardColors(
@@ -187,7 +181,6 @@ fun ItemDetailScreen(
                         }
                     }
 
-                    // Times Worn Card
                     Card(
                         modifier = Modifier.weight(1f),
                         colors = CardDefaults.cardColors(
@@ -218,7 +211,6 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Insights Section
                 Text(
                     text = "Insights",
                     style = MaterialTheme.typography.titleLarge,
@@ -227,7 +219,6 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Insight Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -261,16 +252,35 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Additional Info Section
                 InfoSection(currentItem)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // I'm wearing this today Button
+
+                Button(
+                    onClick = navigateToEdit,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = White,
+                        contentColor = Black
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = "Edit Item",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+
                 Button(
                     onClick = {
                         itemViewModel.incrementWearCount(itemId)
-                        // Reload item to show updated count
                         kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
                             item = itemViewModel.repository.getItemById(itemId)
                         }
@@ -303,6 +313,8 @@ fun ItemDetailScreen(
         }
     }
 }
+
+fun ItemViewModel.incrementWearCount(itemId: Int) {}
 
 @Composable
 fun InfoSection(item: ItemEntity) {

@@ -51,6 +51,11 @@ class ItemRepository(private val itemDao: ItemDao) {
         itemDao.incrementWearCount(itemId)
     }
 
+    suspend fun updateItem(itemEntity: ItemEntity){
+        itemDao.updateItem(itemEntity)
+    }
+
+
     suspend fun deleteItem(itemEntity: ItemEntity){
         itemDao.deleteItem(itemEntity)
     }

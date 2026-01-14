@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 data class ItemUiState(
     val items: Flow<List<ItemEntity>>
 )
+
 class ItemViewModel (val repository: ItemRepository) : ViewModel() {
 
     val itemUiState = repository.items.stateIn(
@@ -20,6 +21,7 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
+
     fun getItemById(itemId: Int){
         viewModelScope.launch{
             repository.getItemById(itemId)
@@ -29,6 +31,12 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
     fun addItem(item: Item) {
         viewModelScope.launch {
             repository.addItem(item)
+        }
+    }
+
+    fun updateItem(itemEntity: ItemEntity){
+        viewModelScope.launch{
+            repository.updateItem(itemEntity)
         }
     }
 
@@ -43,5 +51,4 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
             repository.deleteItem(itemEntity)
         }
     }
-
 }

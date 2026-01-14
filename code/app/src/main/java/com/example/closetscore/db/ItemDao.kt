@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,6 +24,10 @@ interface ItemDao {
 
     @Query("UPDATE items SET wearCount = wearCount + 1 WHERE id = :itemId")
     suspend fun incrementWearCount(itemId: Int)
+
+    @Update
+    suspend fun updateItem(itemEntity: ItemEntity)
+
 
 
 }
