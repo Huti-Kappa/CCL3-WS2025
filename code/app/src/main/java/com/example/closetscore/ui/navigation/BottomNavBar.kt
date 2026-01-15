@@ -110,7 +110,7 @@ fun BottomNavBar(
                                     saveState = true
                                 }
                                 launchSingleTop = true
-                                restoreState = true
+                                restoreState = false
                             }
                         }
                     )
