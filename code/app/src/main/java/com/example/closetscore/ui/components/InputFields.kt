@@ -55,6 +55,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.closetscore.db.BrandType
 import com.example.closetscore.db.ItemCategory
 import com.example.closetscore.ui.theme.Black
 import com.example.closetscore.ui.theme.DarkGrey
@@ -62,8 +63,10 @@ import com.example.closetscore.ui.theme.DarkestGrey
 import com.example.closetscore.ui.theme.Grey
 import com.example.closetscore.ui.theme.LightGreen
 import com.example.closetscore.ui.theme.White
+import com.example.closetscore.ui.viewmodel.ItemViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.Int
 
 
 @Composable
