@@ -48,7 +48,6 @@ fun ItemCard(
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
