@@ -240,7 +240,8 @@ fun ItemDetailScreen(
                         Text(
                             text = if (currentItem.wearCount > 0) {
                                 val ppw = currentItem.price / currentItem.wearCount
-                                val decrease = ((currentItem.price - ppw) / currentItem.price * 100).toInt()
+                                val decrease =
+                                    ((currentItem.price - ppw) / currentItem.price * 100).toInt()
                                 "PPW decreased by $decrease% this month"
                             } else {
                                 "Start wearing this item to track insights"
@@ -277,6 +278,32 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+
+                Button(
+                    onClick = {
+                        itemViewModel.deleteItem(currentItem)
+                        kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+                            itemViewModel.repository.deleteItem(currentItem)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = White,
+                        contentColor = Black
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+
+                ) {
+                    Text(
+                        text = "Delete Item",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                
 
                 Button(
                     onClick = {
