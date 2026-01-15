@@ -50,7 +50,24 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
 
     fun initializeForm(itemId: Int?) {
         if (itemId != null && itemId != 0) {
-            _formState.value = ItemEntryUiState()
+            viewModelScope.launch {
+                val item = repository.getItemById(itemId)
+                item?.let {
+                    _formState.value = ItemEntryUiState(
+                        id = it.id,
+                        name = it.name,
+                        category = it.category,
+                        brandName = it.brandName ?: "",
+                        price = it.price.toString(),
+                        dateString = it.dateAcquired.format(dateFormatter),
+                        isSecondHand = it.isSecondHand,
+                        wearCount = it.wearCount,
+                        photoUri = it.photoUri ?: "",
+                        brandType = it.brandType,
+                        material = it.material
+                    )
+                }
+            }
         } else {
             _formState.value = ItemEntryUiState()
         }

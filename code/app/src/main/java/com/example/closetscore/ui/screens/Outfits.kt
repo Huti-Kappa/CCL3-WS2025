@@ -83,7 +83,7 @@ fun OutfitsScreen(
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                     }
-                    items(templatesList) { templateWithItems ->
+                    items(templatesList, span = { GridItemSpan(maxLineSpan) }) { templateWithItems ->
                         TemplateCard(
                             templateWithItems = templateWithItems,
                             onClick = {
