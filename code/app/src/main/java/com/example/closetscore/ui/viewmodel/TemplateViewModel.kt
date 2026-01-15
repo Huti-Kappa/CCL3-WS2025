@@ -49,10 +49,10 @@ class TemplateViewModel(
         }
     }
 
-    fun deleteTemplate(templateId: Int, templateEntity: TemplateEntity) {
+    fun deleteTemplate(templateId: Int) {
         viewModelScope.launch {
             try {
-                repository.deleteTemplate(templateEntity)
+                repository.deleteTemplate(templateId)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

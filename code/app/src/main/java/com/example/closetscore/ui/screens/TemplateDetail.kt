@@ -41,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.closetscore.db.TemplateWithItems
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.ItemCard
+import com.example.closetscore.ui.theme.Black
 import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
@@ -296,6 +297,33 @@ fun TemplateDetailScreen(
                                 }
                             }
                         }
+                    }
+
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Button(
+                            onClick = {
+                                templateViewModel.deleteTemplate(templateId)
+                                kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+                                    templateViewModel.repository.deleteTemplate(templateId)
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = White,
+                                contentColor = Black
+                            ),
+                            shape = RoundedCornerShape(12.dp)
+
+                        ) {
+                            Text(
+                                text = "Delete Template",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
