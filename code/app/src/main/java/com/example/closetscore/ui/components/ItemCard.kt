@@ -28,6 +28,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.closetscore.data.Item
 import com.example.closetscore.db.ItemEntity
+import com.example.closetscore.db.ItemStatus
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.theme.Black
 import com.example.closetscore.ui.theme.DarkGrey
@@ -47,7 +48,6 @@ fun ItemCard(
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -129,10 +129,62 @@ fun ItemCard(
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text("Delete Item?") },
-            text = { Text("Are you sure you want to delete '${item.name}'?") },
+            text = { Text("This Item I have ...") },
+
             confirmButton = {
-                TextButton(
-                    onClick = {
+                fun confirmAction(newStatus: ItemStatus) {
+                    val ent = ItemEntity(
+                        id = item.id,
+                        name = item.name,
+                        photoUri = item.photoUri,
+                        brandName = item.brandName,
+                        brandType = item.brandType,
+                        material = item.material,
+                        category = item.category,
+                        price = item.price,
+                        isSecondHand = item.isSecondHand,
+                        wearCount = item.wearCount,
+                        dateAcquired = item.dateAcquired,
+                        status = newStatus
+                    )
+                    itemViewModel.updateItem(ent)
+                    showDeleteDialog = false
+                }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp) // Space between buttons
+                ) {
+
+                    OutlinedButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { confirmAction(ItemStatus.SOLD) }
+                    ) {
+                        Text("Sold", color = Color(0xFF4CAF50)) // Green
+                    }
+
+                    OutlinedButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { confirmAction(ItemStatus.DONATED) }
+                    ) {
+                        Text("Donated", color = Color(0xFF2196F3)) // Blue
+                    }
+
+                    OutlinedButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { confirmAction(ItemStatus.TRASHED) }
+                    ) {
+                        Text("Trashed", color = Color.Gray)
+                    }
+
+                    OutlinedButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { confirmAction(ItemStatus.LOST) }
+                    ) {
+                        Text("Lost", color = Color.Red)
+                    }
+                    TextButton(onClick = {
                         val ent = ItemEntity(
                             id = item.id,
                             name = item.name,
@@ -148,15 +200,15 @@ fun ItemCard(
                             status = item.status
                         )
                         itemViewModel.deleteItem(ent)
-                        showDeleteDialog = false
+                        showDeleteDialog = false }
+                    )
+                    {
+                        Text("Full Delete (Remove from Score)", color = Color.Red)
                     }
-                ) {
-                    Text("Delete", color = Color.Red)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
+
+                    TextButton(onClick = { showDeleteDialog = false }) {
+                        Text("Cancel")
+                    }
                 }
             }
         )

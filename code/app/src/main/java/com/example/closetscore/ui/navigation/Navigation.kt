@@ -108,8 +108,3 @@ fun Navigation(
         }
     }
 }
-
-@Composable
-fun DummyScreen(text: String) {
-    Text(text = text)
-}
