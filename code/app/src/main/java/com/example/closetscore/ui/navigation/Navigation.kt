@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.closetscore.ui.screens.ClosetScreen
 import com.example.closetscore.ui.screens.EditItemScreen
+import com.example.closetscore.ui.screens.EditTemplateScreen
 import com.example.closetscore.ui.screens.HomeScreen
 import com.example.closetscore.ui.screens.ItemCreateScreen
 import com.example.closetscore.ui.screens.ItemDetailScreen
@@ -89,8 +90,20 @@ fun Navigation(
                 templateId = templateId,
                 navigateBack = { navController.popBackStack() },
                 navigateToEdit = {
-                    // TODO: Hier später Navigation zum Template-Bearbeiten einfügen
+                    navController.navigate("edit_template/$templateId")
                 }
+            )
+        }
+
+        composable(
+            route = "${Screen.EditTemplate.route}/{templateId}",
+            arguments = listOf(navArgument("templateId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val templateId = backStackEntry.arguments?.getInt("templateId") ?: return@composable
+
+            EditTemplateScreen(
+                templateId = templateId,
+                navigateBack = { navController.popBackStack() }
             )
         }
     }
