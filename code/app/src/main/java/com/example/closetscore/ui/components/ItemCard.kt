@@ -185,6 +185,27 @@ fun ItemCard(
                     ) {
                         Text("Lost", color = Color.Red)
                     }
+                    TextButton(onClick = {
+                        val ent = ItemEntity(
+                            id = item.id,
+                            name = item.name,
+                            photoUri = item.photoUri,
+                            brandName = item.brandName,
+                            brandType = item.brandType,
+                            material = item.material,
+                            category = item.category,
+                            price = item.price,
+                            isSecondHand = item.isSecondHand,
+                            wearCount = item.wearCount,
+                            dateAcquired = item.dateAcquired,
+                            status = item.status
+                        )
+                        itemViewModel.deleteItem(ent)
+                        showDeleteDialog = false }
+                    )
+                    {
+                        Text("Full Delete (Remove from Score)", color = Color.Red)
+                    }
 
                     TextButton(onClick = { showDeleteDialog = false }) {
                         Text("Cancel")
