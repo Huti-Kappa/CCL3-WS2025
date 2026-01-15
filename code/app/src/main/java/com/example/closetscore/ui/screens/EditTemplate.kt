@@ -72,7 +72,7 @@ fun EditTemplateScreen(
     var isSuccess by remember { mutableStateOf(false) }
 
     val itemsList by itemViewModel.repository.items.collectAsState(initial = emptyList())
-    
+
     LaunchedEffect(templateId) {
         withContext(Dispatchers.IO) {
             val loadedTemplate = templateViewModel.repository.getTemplateWithItems(templateId)
