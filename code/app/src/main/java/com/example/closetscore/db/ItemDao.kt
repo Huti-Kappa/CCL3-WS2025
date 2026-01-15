@@ -16,7 +16,7 @@ interface ItemDao {
     @Delete
     suspend fun deleteItem(itemEntity: ItemEntity)
 
-    @Query("SELECT * FROM items")
+    @Query("SELECT * FROM items WHERE status = 'ACTIVE'")
     fun getAllItems(): Flow<List<ItemEntity>>
 
     @Query("SELECT * FROM items WHERE id = :itemId")

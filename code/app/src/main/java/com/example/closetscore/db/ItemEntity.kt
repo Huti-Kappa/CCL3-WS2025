@@ -48,5 +48,4 @@ enum class ItemStatus {
     DONATED,
     TRASHED,
     LOST,
-    WISH_LIST
 }
