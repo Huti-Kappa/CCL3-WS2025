@@ -33,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.closetscore.data.Item
 import com.example.closetscore.db.BrandType
 import com.example.closetscore.db.ItemCategory
+import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.db.MaterialType
 import com.example.closetscore.ui.theme.DarkGrey
 import com.example.closetscore.ui.theme.Green
@@ -45,7 +46,8 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun AddItemGrid(
                 itemViewModel: ItemViewModel,
-                onSuccess: () -> Unit
+                onSuccess: () -> Unit,
+                isEditMode: Boolean = false
 ){
     val state by itemViewModel.formState.collectAsStateWithLifecycle()
 
@@ -121,25 +123,44 @@ fun AddItemGrid(
                 }
 
                 if (state.category != null) {
-                    val newItem = Item(
-                        name = state.name,
-                        category = state.category!!,
-                        price = finalPrice,
-                        dateAcquired = finalDate,
-                        brandName = state.brandName.ifBlank { null },
-                        brandType = state.brandType,
-                        material = state.material,
-                        isSecondHand = state.isSecondHand,
-                        wearCount = state.wearCount,
-                        photoUri = state.photoUri.ifBlank { null }
-                    )
-
-                    itemViewModel.addItem(newItem)
+                    if (isEditMode) {
+                        val updatedItem = ItemEntity(
+                            id = state.id,
+                            name = state.name,
+                            category = state.category!!,
+                            price = finalPrice,
+                            dateAcquired = finalDate,
+                            brandName = state.brandName.ifBlank { null },
+                            brandType = state.brandType,
+                            material = state.material,
+                            isSecondHand = state.isSecondHand,
+                            wearCount = state.wearCount,
+                            photoUri = state.photoUri.ifBlank { null }
+                        )
+                        itemViewModel.updateItem(updatedItem)
+                    } else {
+                        val newItem = Item(
+                            name = state.name,
+                            category = state.category!!,
+                            price = finalPrice,
+                            dateAcquired = finalDate,
+                            brandName = state.brandName.ifBlank { null },
+                            brandType = state.brandType,
+                            material = state.material,
+                            isSecondHand = state.isSecondHand,
+                            wearCount = state.wearCount,
+                            photoUri = state.photoUri.ifBlank { null }
+                        )
+                        itemViewModel.addItem(newItem)
+                    }
                     onSuccess()
                 }
             }
         ) {
-            Text("Add to Closet", modifier = Modifier.padding(8.dp))
+            Text(
+                if (isEditMode) "Save Changes" else "Add to Closet",
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -31,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -72,6 +75,8 @@ fun EditItemScreen(
     itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateBack: () -> Unit
 ) {
+    val formState by itemViewModel.formState.collectAsState()
+
     LaunchedEffect(itemId) {
         itemViewModel.initializeForm(itemId)
     }
@@ -83,6 +88,18 @@ fun EditItemScreen(
             delay(1500)
             navigateBack()
         }
+    }
+
+    // Wait until form is loaded (id will be set when item is loaded)
+    if (formState.id == 0 && itemId != 0) {
+        // Show loading state
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
     }
 
     AnimatedContent(
@@ -98,7 +115,8 @@ fun EditItemScreen(
         } else {
             AddItemGrid(
                 itemViewModel = itemViewModel,
-                onSuccess = { isSuccess = true }
+                onSuccess = { isSuccess = true },
+                true
             )
         }
     }
