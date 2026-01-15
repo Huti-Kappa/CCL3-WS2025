@@ -165,31 +165,6 @@ fun AddItemGrid(
     }
 }
 
-
-@Composable
-fun SuccessView() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            imageVector = Icons.Default.CheckCircle,
-            contentDescription = "Success",
-            tint = Green,
-            modifier = Modifier.size(120.dp)
-        )
-        Text(
-            text = "Added to Closet!",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-    }
-}
-
-
 @Composable
 fun NameSection(
     name: String,

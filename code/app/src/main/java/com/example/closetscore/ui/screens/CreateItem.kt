@@ -50,7 +50,7 @@ fun ItemCreateScreen(
         label = "SuccessAnimation"
     ) { success ->
         if (success) {
-            SuccessView()
+            SuccessView("Item Created!")
         } else {
             AddItemGrid(itemViewModel, onSuccess = { isSuccess = true })
         }

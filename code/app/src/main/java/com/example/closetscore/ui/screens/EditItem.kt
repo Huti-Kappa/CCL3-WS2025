@@ -67,7 +67,7 @@ fun EditItemScreen(
         label = "SuccessAnimation"
     ) { success ->
         if (success) {
-            SuccessView()
+            SuccessView("Item Edited!")
         } else {
             AddItemGrid(
                 itemViewModel = itemViewModel,
