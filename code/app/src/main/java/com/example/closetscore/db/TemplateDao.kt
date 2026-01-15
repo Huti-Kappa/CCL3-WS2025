@@ -14,8 +14,8 @@ interface TemplateDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTemplate(templateEntity: TemplateEntity): Long
 
-    @Delete
-    suspend fun deleteTemplate(templateEntity: TemplateEntity)
+    @Query("DELETE FROM templates WHERE id = :templateId")
+    suspend fun deleteTemplate(templateId: Int)
 
     @Query("SELECT * FROM templates WHERE status = 'ACTIVE'")
     fun getAllTemplates(): Flow<List<TemplateEntity>>

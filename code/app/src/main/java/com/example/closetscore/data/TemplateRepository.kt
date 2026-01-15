@@ -29,8 +29,8 @@ class TemplateRepository(private val templateDao: TemplateDao) {
         templateDao.updateTemplate(templateEntity)
     }
 
-    suspend fun deleteTemplate(templateEntity: TemplateEntity) {
-        templateDao.deleteTemplate(templateEntity)
+    suspend fun deleteTemplate(templateId: Int) {
+        templateDao.deleteTemplate(templateId)
     }
     suspend fun incrementWearCount(templateId: Int){
         templateDao.incrementWearCount(templateId)

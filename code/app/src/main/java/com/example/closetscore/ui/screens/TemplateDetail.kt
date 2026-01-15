@@ -1,5 +1,11 @@
 package com.example.closetscore.ui.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,12 +46,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.closetscore.db.TemplateWithItems
 import com.example.closetscore.ui.AppViewModelProvider
+import com.example.closetscore.ui.components.AddItemGrid
 import com.example.closetscore.ui.components.ItemCard
+import com.example.closetscore.ui.components.SuccessView
+import com.example.closetscore.ui.theme.Black
 import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.format.DateTimeFormatter
@@ -58,10 +68,44 @@ fun TemplateDetailScreen(
     templateViewModel: TemplateViewModel = viewModel(factory = AppViewModelProvider.Factory),
     itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    var isSuccess by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isSuccess) {
+        if (isSuccess) {
+            delay(1500)
+            navigateBack()
+        }
+    }
+
+    AnimatedContent(
+        targetState = isSuccess,
+        transitionSpec = {
+            (fadeIn(animationSpec = tween(500)) + scaleIn()) togetherWith
+                    fadeOut(animationSpec = tween(300))
+        },
+        label = "SuccessAnimation"
+    ) { success ->
+        if (success) {
+            SuccessView(SuccessText = "Deleted Template!")
+        } else {
+            TemplateDetailComponents(templateId, templateViewModel, navigateBack, navigateToEdit, itemViewModel, onSuccessChange = { isSuccess = true })
+        }
+    }
+}
+
+
+@Composable
+fun TemplateDetailComponents(
+    templateId: Int,
+    templateViewModel: TemplateViewModel,
+    navigateBack: () -> Unit,
+    navigateToEdit: () -> Unit,
+    itemViewModel: ItemViewModel,
+    onSuccessChange: () -> Unit,
+) {
     var templateWithItems by remember { mutableStateOf<TemplateWithItems?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
-
     LaunchedEffect(templateId) {
         withContext(Dispatchers.IO) {
             templateWithItems = templateViewModel.repository.getTemplateWithItems(templateId)
@@ -296,6 +340,34 @@ fun TemplateDetailScreen(
                                 }
                             }
                         }
+                    }
+
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Button(
+                            onClick = {
+                                templateViewModel.deleteTemplate(templateId)
+                                kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+                                    templateViewModel.repository.deleteTemplate(templateId)
+                                }
+                                onSuccessChange()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = White,
+                                contentColor = Black
+                            ),
+                            shape = RoundedCornerShape(12.dp)
+
+                        ) {
+                            Text(
+                                text = "Delete Template",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
