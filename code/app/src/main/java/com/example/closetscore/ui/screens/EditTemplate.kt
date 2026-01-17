@@ -120,13 +120,6 @@ fun EditTemplateScreen(
                     verticalArrangement = Arrangement.spacedBy(24.dp),
                     contentPadding = PaddingValues(16.dp)
                 ) {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Text(
-                            text = "Edit Template",
-                            style = MaterialTheme.typography.headlineMedium,
-                            modifier = Modifier.padding(bottom = 24.dp)
-                        )
-                    }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         BasicInputField(
@@ -164,7 +157,6 @@ fun EditTemplateScreen(
                             enabled = name.isNotBlank() && selectedItemIds.isNotEmpty(),
                             onClick = {
                                 if (template != null) {
-                                    // Update template name
                                     val updatedTemplate = TemplateEntity(
                                         id = templateId,
                                         name = name,
