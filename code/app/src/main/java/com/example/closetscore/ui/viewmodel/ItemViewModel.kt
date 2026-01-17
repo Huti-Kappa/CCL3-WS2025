@@ -1,5 +1,6 @@
 package com.example.closetscore.ui.viewmodel
 
+import android.app.appsearch.SearchResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.closetscore.data.Item
@@ -40,10 +41,23 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
 
     val itemUiState = repository.items.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.Eagerly,
         emptyList()
-    )
 
+    )
+    private val _searchResults = MutableStateFlow<List<Item>>(emptyList())
+    val searchResults = _searchResults.asStateFlow()
+
+
+    fun searchItems(query: String) {
+        if (query.isBlank()) {
+            _searchResults.value = emptyList()
+        } else {
+            _searchResults.value = itemUiState.value.filter { item ->
+                item.name.contains(query, ignoreCase = true)
+            }
+        }
+    }
     private val _formState = MutableStateFlow(ItemEntryUiState())
     val formState = _formState.asStateFlow()
     private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -72,7 +86,6 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
             _formState.value = ItemEntryUiState()
         }
     }
-
     fun updateName(name: String) = _formState.update { it.copy(name = name) }
     fun updateCategory(category: ItemCategory) = _formState.update { it.copy(category = category) }
     fun updateBrandName(brand: String) = _formState.update { it.copy(brandName = brand) }
@@ -109,7 +122,7 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
     }
 
     fun deleteItem(itemEntity: ItemEntity){
-        viewModelScope.launch{
+        viewModelScope.launch{  
             repository.deleteItem(itemEntity)
         }
     }
