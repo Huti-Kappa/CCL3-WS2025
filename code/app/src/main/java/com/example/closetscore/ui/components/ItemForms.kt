@@ -79,11 +79,11 @@ fun AddItemGrid(
                 }
                 Text(
                     if (isEditMode) "Edit Item" else "Add Item",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
-            HorizontalDivider(thickness = 1.dp, color = DarkGrey)
+            //HorizontalDivider(thickness = 1.dp, color = DarkGrey)
         }
 
         AddImage(
