@@ -52,7 +52,7 @@ fun ItemCreateScreen(
         if (success) {
             SuccessView("Item Created!")
         } else {
-            AddItemGrid(itemViewModel, onSuccess = { isSuccess = true })
+            AddItemGrid(itemViewModel, onSuccess = { isSuccess = true }, navigateBack)
         }
     }
 }

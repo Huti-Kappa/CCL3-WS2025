@@ -2,6 +2,7 @@ package com.example.closetscore.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,11 +13,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,9 +48,10 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun AddItemGrid(
-                itemViewModel: ItemViewModel,
-                onSuccess: () -> Unit,
-                isEditMode: Boolean = false
+    itemViewModel: ItemViewModel,
+    onSuccess: () -> Unit,
+    navigateBack: () -> Unit,
+    isEditMode: Boolean = false
 ){
     val state by itemViewModel.formState.collectAsStateWithLifecycle()
 
@@ -59,11 +63,26 @@ fun AddItemGrid(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Add New Item",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+
+            ) {
+                IconButton(
+                    onClick = navigateBack,
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+                Text(
+                    if (isEditMode) "Edit Item" else "Add Item",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
             HorizontalDivider(thickness = 1.dp, color = DarkGrey)
         }
 
