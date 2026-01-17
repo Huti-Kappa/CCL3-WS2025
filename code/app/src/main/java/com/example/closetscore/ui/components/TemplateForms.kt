@@ -59,11 +59,11 @@ fun AddTemplateGrid(
                 }
                 Text(
                     if (isEditMode) "Edit Template" else "Add Template",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
-            HorizontalDivider(thickness = 1.dp, color = DarkGrey)
+            //HorizontalDivider(thickness = 1.dp, color = DarkGrey)
         }
 
 
