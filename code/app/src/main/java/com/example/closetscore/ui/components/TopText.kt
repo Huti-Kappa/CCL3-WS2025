@@ -16,7 +16,7 @@ fun HeaderText(text: String){
     Text(
         text=text,
         style = MaterialTheme.typography.displaySmall,
-        modifier = Modifier.padding(bottom = 8.dp)
+        modifier = Modifier.padding(bottom = 2.dp)
     )
 }
 

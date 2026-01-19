@@ -1,6 +1,7 @@
 package com.example.closetscore.ui.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,9 +29,10 @@ fun SimpleSearchBar(
             .semantics { isTraversalGroup = true }
     ) {
         SearchBar(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
+            modifier = modifier
                 .semantics { traversalIndex = 0f },
+            windowInsets = WindowInsets(0.dp),
+
             inputField = {
                 SearchBarDefaults.InputField(
                     query = textFieldState.text.toString(),
