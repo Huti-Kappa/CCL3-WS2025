@@ -8,6 +8,9 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.closetscore.data.Item
 import com.example.closetscore.data.ItemRepository
+import com.example.closetscore.db.BrandType
+import com.example.closetscore.db.ItemStatus
+import com.example.closetscore.db.MaterialType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +18,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
 class ScoreViewModel(repository: ItemRepository) : ViewModel() {
     val score: StateFlow<Double> = repository.items
@@ -28,6 +32,48 @@ class ScoreViewModel(repository: ItemRepository) : ViewModel() {
         )
 
     private fun calculateLogic(items: List<Item>): Double {
-        return items.sumOf { it.price }
+        var score = 0
+        items.forEach { item ->
+            score += calculateValue(item)
+        }
+        return score.toDouble() / items.size
+    }
+    fun calculateValue(item: Item): Int {
+        var score = 50
+        if (item.isSecondHand) {
+            score += 20
+        }
+
+        when (item.brandType) {
+            BrandType.FAST_FASHION -> score -= 20
+            BrandType.ECO_SUSTAINABLE -> score += 15
+            BrandType.STANDARD -> score += 0
+        }
+
+        when (item.material) {
+            MaterialType.NATURAL -> score += 10
+            MaterialType.SYNTHETIC -> score -= 10
+            MaterialType.MIXED -> score -= 5
+        }
+
+        val wearBonus = min(item.wearCount, 20)
+        score += wearBonus
+
+        when (item.status) {
+            ItemStatus.TRASHED -> {
+                if (item.wearCount > 50) {
+                    score += 0
+                } else if (item.wearCount > 30) {
+                    score -= 10
+                } else {
+                    score -= 50
+                }
+            }
+            ItemStatus.SOLD, ItemStatus.DONATED -> score += 10
+            ItemStatus.ACTIVE -> score+=0
+            ItemStatus.LOST -> score-=1
+        }
+        return score.coerceIn(0, 100)
     }
 }
+
