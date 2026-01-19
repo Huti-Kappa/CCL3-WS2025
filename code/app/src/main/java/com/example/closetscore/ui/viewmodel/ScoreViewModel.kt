@@ -21,22 +21,22 @@ import kotlinx.coroutines.launch
 import kotlin.math.min
 
 class ScoreViewModel(repository: ItemRepository) : ViewModel() {
-    val score: StateFlow<Double> = repository.items
+    val score: StateFlow<Int> = repository.items
         .map { items ->
             calculateLogic(items)
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = 0.0
+            initialValue = 0
         )
 
-    private fun calculateLogic(items: List<Item>): Double {
+    private fun calculateLogic(items: List<Item>): Int {
         var score = 0
         items.forEach { item ->
             score += calculateValue(item)
         }
-        return score.toDouble() / items.size
+        return score / items.size
     }
     fun calculateValue(item: Item): Int {
         var score = 50
