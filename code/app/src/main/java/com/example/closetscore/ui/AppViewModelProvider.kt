@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.closetscore.ClosetApplication
 import com.example.closetscore.ui.viewmodel.ItemViewModel
+import com.example.closetscore.ui.viewmodel.ScoreViewModel
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
 
 object AppViewModelProvider {
@@ -21,6 +22,11 @@ object AppViewModelProvider {
         initializer {
             val application = this[APPLICATION_KEY] as ClosetApplication
             TemplateViewModel(application.templateRepository)
+        }
+
+        initializer {
+            val application = this[APPLICATION_KEY] as ClosetApplication
+            ScoreViewModel(application.itemRepository)
         }
     }
 }

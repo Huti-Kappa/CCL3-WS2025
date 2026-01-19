@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -29,8 +30,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,6 +51,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.closetscore.db.BrandType
 import com.example.closetscore.db.ItemEntity
+import com.example.closetscore.db.ItemStatus
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.SuccessView
 import com.example.closetscore.ui.theme.Black
@@ -56,6 +60,7 @@ import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -115,6 +120,7 @@ fun ItemDetailComponent(
 ) {
     var item by remember { mutableStateOf<ItemEntity?>(null) }
     val coroutineScope = rememberCoroutineScope()
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(itemId) {
         withContext(Dispatchers.IO) {
@@ -125,18 +131,13 @@ fun ItemDetailComponent(
     Scaffold(
         topBar = {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                modifier = Modifier.fillMaxWidth().padding(16.dp)
             ) {
                 IconButton(
                     onClick = navigateBack,
                     modifier = Modifier.align(Alignment.CenterStart)
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
-                    )
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
                 Text(
                     text = "Closet Detail",
@@ -154,10 +155,9 @@ fun ItemDetailComponent(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
             ) {
+
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(320.dp),
+                    modifier = Modifier.fillMaxWidth().height(320.dp),
                     shape = RoundedCornerShape(16.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
@@ -170,71 +170,120 @@ fun ItemDetailComponent(
                         )
                     } else {
                         Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
+                            Text("No Image", style = MaterialTheme.typography.bodyLarge)
+                        }
+                    }
+                }
+
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = currentItem.name,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Purchase Price",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Card(
+                        modifier = Modifier.weight(1f),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             Text(
-                                text = "No Image",
-                                style = MaterialTheme.typography.bodyLarge,
+                                text = "PRICE PER WEAR",
+                                style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "€%.2f".format(
+                                    if (currentItem.wearCount > 0)
+                                        currentItem.price / currentItem.wearCount
+                                    else
+                                        currentItem.price
+                                ),
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
+                    Card(
+                        modifier = Modifier.weight(1f),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "TIMES WORN",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = currentItem.wearCount.toString(),
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
                 }
 
-                // ... [Middle section code hidden for brevity, no changes needed here] ...
-
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
                     onClick = navigateToEdit,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = White,
-                        contentColor = Black
-                    ),
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = White, contentColor = Black),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text(
-                        text = "Edit Item",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    Text("Edit Item", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            withContext(Dispatchers.IO) {
-                                itemViewModel.repository.deleteItem(currentItem)
-                            }
-                            onSuccess("Item Deleted!")
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = White,
-                        contentColor = Black
-                    ),
-                    shape = RoundedCornerShape(12.dp)
 
+                Button(
+                    onClick = { showDeleteDialog = true },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = White, contentColor = Black),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text(
-                        text = "Delete Item",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    Text("Delete Item", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
-
 
                 Button(
                     onClick = {
@@ -243,34 +292,97 @@ fun ItemDetailComponent(
                             item = itemViewModel.repository.getItemById(itemId)
                         }
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Red,
-                        contentColor = White
-                    ),
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Red, contentColor = White),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text(
-                        text = "I'm wearing this today",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    Text("I'm wearing this today", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
+
+            if (showDeleteDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDeleteDialog = false },
+                    title = { Text("Delete Item?") },
+                    text = {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text("What happened to this item?")
+                            Spacer(modifier = Modifier.height(8.dp))
+                            fun updateStatus(newStatus: ItemStatus, successText: String) {
+                                coroutineScope.launch {
+                                    withContext(Dispatchers.IO) {
+                                        val updatedItem = currentItem.copy(status = newStatus)
+                                        itemViewModel.repository.updateItem(updatedItem)
+                                    }
+                                    showDeleteDialog = false
+                                    onSuccess(successText)
+                                }
+                            }
+
+                            OutlinedButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { updateStatus(ItemStatus.SOLD, "Marked as Sold!") }
+                            ) {
+                                Text("Sold", color = androidx.compose.ui.graphics.Color(0xFF4CAF50))
+                            }
+
+                            OutlinedButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { updateStatus(ItemStatus.DONATED, "Marked as Donated!") }
+                            ) {
+                                Text("Donated", color = androidx.compose.ui.graphics.Color(0xFF2196F3))
+                            }
+
+                            OutlinedButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { updateStatus(ItemStatus.TRASHED, "Marked as Trashed") }
+                            ) {
+                                Text("Trashed", color = androidx.compose.ui.graphics.Color.Gray)
+                            }
+
+                            OutlinedButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { updateStatus(ItemStatus.LOST, "Marked as Lost") }
+                            ) {
+                                Text("Lost", color = androidx.compose.ui.graphics.Color.Red)
+                            }
+
+                            TextButton(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        withContext(Dispatchers.IO) {
+                                            itemViewModel.repository.deleteItem(currentItem)
+                                        }
+                                        showDeleteDialog = false
+                                        onSuccess("Item Permanently Deleted!")
+                                    }
+                                }
+                            ) {
+                                Text("Full Delete (Remove from Score)", color = androidx.compose.ui.graphics.Color.Red)
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showDeleteDialog = false }) {
+                            Text("Cancel")
+                        }
+                    }
+                )
+            }
+
         } ?: run {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("Loading...")
             }
         }
     }
 }
+
 fun ItemViewModel.incrementWearCount(itemId: Int) {}
 
 

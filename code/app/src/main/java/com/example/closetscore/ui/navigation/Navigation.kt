@@ -19,6 +19,8 @@ import com.example.closetscore.ui.screens.OutfitsScreen
 import com.example.closetscore.ui.screens.StatsScreen
 import com.example.closetscore.ui.screens.TemplateCreateScreen
 import com.example.closetscore.ui.screens.TemplateDetailScreen
+import com.example.closetscore.ui.viewmodel.ItemViewModel
+import com.example.closetscore.ui.viewmodel.ScoreViewModel
 
 @Composable
 fun Navigation(
