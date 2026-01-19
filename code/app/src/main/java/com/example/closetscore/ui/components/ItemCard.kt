@@ -95,6 +95,22 @@ fun ItemCard(
                     Text(text = "No Image", color = DarkGrey, fontSize = 12.sp)
                 }
             }
+            if (item.isSecondHand) {
+                Text(
+                    text = "Thrifted",
+                    color = White,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .background(
+                            color = LightGreen,
+                            shape = CircleShape
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
         }
 
         Row(
