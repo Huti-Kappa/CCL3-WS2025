@@ -44,6 +44,7 @@ import com.example.closetscore.ui.viewmodel.ItemViewModel
 fun ItemCard(
     item: Item,
     onClick: () -> Unit,
+    onIncrementWear: () -> Unit = {},
     itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -108,7 +109,10 @@ fun ItemCard(
             }
 
             FilledIconButton(
-                onClick = { itemViewModel.incrementWearCount(item.id) },
+                onClick = {
+                    itemViewModel.incrementWearCount(item.id)
+                    onIncrementWear()
+                          },
                 modifier = Modifier.size(42.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(

@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.closetscore.data.Item
+import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.db.TemplateWithItems
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.AddItemGrid
@@ -115,6 +117,12 @@ fun TemplateDetailComponents(
         withContext(Dispatchers.IO) {
             templateWithItems = templateViewModel.repository.getTemplateWithItems(templateId)
             isLoading = false
+        }
+    }
+
+    fun refreshData() {
+        coroutineScope.launch(Dispatchers.IO) {
+            templateWithItems = templateViewModel.repository.getTemplateWithItems(templateId)
         }
     }
 
@@ -265,7 +273,7 @@ fun TemplateDetailComponents(
                     } else {
                         items(template.items) { item ->
                             ItemCard(
-                                item = com.example.closetscore.data.Item(
+                                item = Item(
                                     id = item.id,
                                     name = item.name,
                                     photoUri = item.photoUri,
@@ -282,7 +290,9 @@ fun TemplateDetailComponents(
                                     dateAcquired = item.dateAcquired,
                                     status = item.status
                                 ),
-                                onClick = {navController.navigate("${Screen.ItemDetail.route}/${item.id}")}
+                                onClick = {navController.navigate("${Screen.ItemDetail.route}/${item.id}")},
+                                onIncrementWear = { refreshData() },
+                                itemViewModel = itemViewModel
                             )
                         }
                     }
@@ -335,10 +345,7 @@ fun TemplateDetailComponents(
                                 template.items.forEach { item ->
                                     itemViewModel.incrementWearCount(item.id)
                                 }
-
-                                coroutineScope.launch(Dispatchers.IO) {
-                                    templateWithItems = templateViewModel.repository.getTemplateWithItems(templateId)
-                                }
+                                refreshData()
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -381,9 +388,6 @@ fun TemplateDetailComponents(
                         Button(
                             onClick = {
                                 templateViewModel.deleteTemplate(templateId)
-                                kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
-                                    templateViewModel.repository.deleteTemplate(templateId)
-                                }
                                 onSuccessChange()
                             },
                             modifier = Modifier
