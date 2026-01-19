@@ -23,6 +23,9 @@ interface TemplateDao {
     @Query("UPDATE templates SET wearCount = wearCount + 1 WHERE id = :templateId")
     suspend fun incrementWearCount(templateId: Int)
 
+    @Update
+    suspend fun updateTemplateWearCount(templateEntity: TemplateEntity)
+
     @Transaction
     @Query("SELECT * FROM templates WHERE status = 'ACTIVE'")
     fun getAllTemplatesWithItems(): Flow<List<TemplateWithItems>>

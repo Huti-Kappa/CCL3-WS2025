@@ -36,6 +36,10 @@ class TemplateRepository(private val templateDao: TemplateDao) {
         templateDao.incrementWearCount(templateId)
     }
 
+    suspend fun updateTemplateWearCount(templateEntity: TemplateEntity) {
+        templateDao.updateTemplateWearCount(templateEntity)
+    }
+
     suspend fun addItemToTemplate(templateId: Int, itemId: Int) {
         templateDao.addTemplateItemCrossRef(TemplateItemCrossRef(templateId, itemId))
     }

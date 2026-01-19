@@ -27,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,10 +48,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.closetscore.data.Item
 import com.example.closetscore.db.TemplateEntity
 import com.example.closetscore.db.TemplateWithItems
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.BasicInputField
+import com.example.closetscore.ui.components.TimesWornSection
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
 import kotlinx.coroutines.Dispatchers
@@ -68,10 +70,11 @@ fun EditTemplateScreen(
 ) {
     var template by remember { mutableStateOf<TemplateWithItems?>(null) }
     var isLoading by remember { mutableStateOf(true) }
+    var isSuccess by remember { mutableStateOf(false) }
 
     var name by remember { mutableStateOf("") }
+    var wearCount by remember { mutableIntStateOf(0) }
     var selectedItemIds by remember { mutableStateOf<Set<Int>>(emptySet()) }
-    var isSuccess by remember { mutableStateOf(false) }
 
     val itemsList by itemViewModel.repository.items.collectAsState(initial = emptyList())
 
@@ -82,9 +85,9 @@ fun EditTemplateScreen(
 
             if (loadedTemplate != null) {
                 name = loadedTemplate.template.name
+                wearCount = loadedTemplate.template.wearCount
                 selectedItemIds = loadedTemplate.items.map { it.id }.toSet()
             }
-
             isLoading = false
         }
     }
@@ -167,7 +170,7 @@ fun EditTemplateScreen(
                         }
 
                         items(itemsList) { item ->
-                            SelectableItemCard(
+                            SelectableItemCardEdit(
                                 item = item,
                                 isSelected = selectedItemIds.contains(item.id),
                                 onToggleSelection = { itemId ->
@@ -177,6 +180,12 @@ fun EditTemplateScreen(
                                         selectedItemIds + itemId
                                     }
                                 }
+                            )
+                        }
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            TimesWornSection(
+                                wearCount = wearCount,
+                                onWearChange = { wearCount = it },
                             )
                         }
 
@@ -192,13 +201,11 @@ fun EditTemplateScreen(
                                             id = templateId,
                                             name = name,
                                             date = template!!.template.date,
-                                            wearCount = template!!.template.wearCount,
+                                            wearCount = wearCount,
                                             status = template!!.template.status
                                         )
                                         templateViewModel.updateTemplate(updatedTemplate)
 
-                                        // Note: Logic to update items might need transaction or helper in Repo
-                                        // This naive approach removes all and re-adds all
                                         template!!.items.forEach { item ->
                                             templateViewModel.removeItemFromTemplate(templateId, item.id)
                                         }
@@ -223,7 +230,7 @@ fun EditTemplateScreen(
 
 @Composable
 fun SelectableItemCardEdit(
-    item: com.example.closetscore.db.ItemEntity,
+    item: Item,
     isSelected: Boolean,
     onToggleSelection: (Int) -> Unit
 ) {
