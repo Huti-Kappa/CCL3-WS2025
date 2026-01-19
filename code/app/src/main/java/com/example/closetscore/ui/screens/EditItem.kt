@@ -69,7 +69,7 @@ fun EditItemScreen(
         if (success) {
             SuccessView("Item Edited!")
         } else {
-            AddItemGrid(itemViewModel, onSuccess = { isSuccess = true }, navigateBack)
+            AddItemGrid(itemViewModel, onSuccess = { isSuccess = true }, navigateBack, isEditMode = true)
         }
     }
 }
