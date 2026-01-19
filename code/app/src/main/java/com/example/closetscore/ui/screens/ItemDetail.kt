@@ -59,13 +59,10 @@ import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.format.DateTimeFormatter
-
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -75,8 +72,15 @@ fun ItemDetailScreen(
     navigateToEdit: () -> Unit,
     itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    var item by remember { mutableStateOf<ItemEntity?>(null) }
     var isSuccess by remember { mutableStateOf(false) }
     var successMessage by remember { mutableStateOf("Item Created!") }
+
+    LaunchedEffect(itemId) {
+        withContext(Dispatchers.IO) {
+            item = itemViewModel.repository.getItemById(itemId)
+        }
+    }
 
     LaunchedEffect(isSuccess) {
         if (isSuccess) {
@@ -97,7 +101,7 @@ fun ItemDetailScreen(
             SuccessView(successMessage)
         } else {
             ItemDetailComponent(
-                itemId,
+                itemId = itemId,
                 navigateBack = navigateBack,
                 navigateToEdit = navigateToEdit,
                 itemViewModel = itemViewModel,
@@ -177,7 +181,6 @@ fun ItemDetailComponent(
                         }
                     }
                 }
-
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -260,6 +263,51 @@ fun ItemDetailComponent(
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "Insights",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "📊",
+                            fontSize = 24.sp,
+                            modifier = Modifier.padding(end = 12.dp)
+                        )
+                        Text(
+                            text = if (currentItem.wearCount > 0) {
+                                val ppw = currentItem.price / currentItem.wearCount
+                                val decrease =
+                                    ((currentItem.price - ppw) / currentItem.price * 100).toInt()
+                                "PPW decreased by $decrease% this month"
+                            } else {
+                                "Start wearing this item to track insights"
+                            },
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                InfoSection(currentItem)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -384,8 +432,6 @@ fun ItemDetailComponent(
 }
 
 fun ItemViewModel.incrementWearCount(itemId: Int) {}
-
-
 
 @Composable
 fun InfoSection(item: ItemEntity) {
