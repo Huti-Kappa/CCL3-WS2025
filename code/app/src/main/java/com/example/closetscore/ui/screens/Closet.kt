@@ -45,15 +45,6 @@ fun ClosetGrid(
     val itemsDisplay = if (isSearching) searchResults else itemsList
 
     Column(modifier = Modifier.fillMaxSize()) {
-        SimpleSearchBar(
-            textFieldState = searchState,
-            onSearch = { query -> itemViewModel.searchItems(query) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 16.dp)
-        )
-
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 128.dp),
             horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -63,6 +54,15 @@ fun ClosetGrid(
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 HeaderText(if (isSearching) "Search Results" else "Your Closet")
+            }
+
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SimpleSearchBar(
+                    textFieldState = searchState,
+                    onSearch = { query -> itemViewModel.searchItems(query) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
             }
 
             items(itemsDisplay) { item ->
