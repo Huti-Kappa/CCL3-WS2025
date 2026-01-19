@@ -122,7 +122,7 @@ class ItemViewModel (val repository: ItemRepository) : ViewModel() {
     }
 
     fun deleteItem(itemEntity: ItemEntity){
-        viewModelScope.launch{  
+        viewModelScope.launch{
             repository.deleteItem(itemEntity)
         }
     }
