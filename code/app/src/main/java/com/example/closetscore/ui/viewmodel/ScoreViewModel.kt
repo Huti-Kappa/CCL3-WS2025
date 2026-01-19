@@ -36,7 +36,8 @@ class ScoreViewModel(repository: ItemRepository) : ViewModel() {
         items.forEach { item ->
             score += calculateValue(item)
         }
-        return score / items.size
+        val average = score / items.size
+        return average.coerceIn(0, 100)
     }
     fun calculateValue(item: Item): Int {
         var score = 50
@@ -56,8 +57,7 @@ class ScoreViewModel(repository: ItemRepository) : ViewModel() {
             MaterialType.MIXED -> score -= 5
         }
 
-        val wearBonus = min(item.wearCount, 20)
-        score += wearBonus
+        score += item.wearCount/3
 
         when (item.status) {
             ItemStatus.TRASHED -> {
@@ -73,7 +73,7 @@ class ScoreViewModel(repository: ItemRepository) : ViewModel() {
             ItemStatus.ACTIVE -> score+=0
             ItemStatus.LOST -> score-=1
         }
-        return score.coerceIn(0, 100)
+        return score
     }
 }
 
