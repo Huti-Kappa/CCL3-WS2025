@@ -24,10 +24,13 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -71,74 +74,96 @@ fun TemplateCreateScreen(
         }
     }
 
-    AnimatedContent(
-        targetState = isSuccess,
-        transitionSpec = {
-            (fadeIn(animationSpec = tween(500)) + scaleIn()) togetherWith
-                    fadeOut(animationSpec = tween(300))
-        },
-        label = "SuccessAnimation"
-    ) { success ->
-        if (success) {
-            TemplateSuccessView()
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 128.dp),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(16.dp)
+    Scaffold(
+        topBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text(
-                        text = "Create New Template",
-                        style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.padding(bottom = 24.dp)
+                IconButton(
+                    onClick = navigateBack,
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back"
                     )
                 }
+                Text(
+                    text = "Create Outfit",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
+    ) { paddingValues ->
+        AnimatedContent(
+            targetState = isSuccess,
+            transitionSpec = {
+                (fadeIn(animationSpec = tween(500)) + scaleIn()) togetherWith
+                        fadeOut(animationSpec = tween(300))
+            },
+            label = "SuccessAnimation",
+            modifier = Modifier.padding(paddingValues)
+        ) { success ->
+            if (success) {
+                TemplateSuccessView()
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 128.dp),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    contentPadding = PaddingValues(16.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
 
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    BasicInputField(
-                        label = "Template Name",
-                        value = name,
-                        onValueChange = { name = it }
-                    )
-                }
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        BasicInputField(
+                            label = "Template Name",
+                            value = name,
+                            onValueChange = { name = it }
+                        )
+                    }
 
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text(
-                        text = "Select Items for Template",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
-                    )
-                }
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Text(
+                            text = "Select Items for Template",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                        )
+                    }
 
-                items(itemsList) { item ->
-                    SelectableItemCard(
-                        item = item,
-                        isSelected = selectedItemIds.contains(item.id),
-                        onToggleSelection = { itemId ->
-                            selectedItemIds = if (selectedItemIds.contains(itemId)) {
-                                selectedItemIds - itemId
-                            } else {
-                                selectedItemIds + itemId
+                    items(itemsList) { item ->
+                        SelectableItemCard(
+                            item = item,
+                            isSelected = selectedItemIds.contains(item.id),
+                            onToggleSelection = { itemId ->
+                                selectedItemIds = if (selectedItemIds.contains(itemId)) {
+                                    selectedItemIds - itemId
+                                } else {
+                                    selectedItemIds + itemId
+                                }
                             }
-                        }
-                    )
-                }
+                        )
+                    }
 
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Button(
-                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                        enabled = name.isNotBlank() && selectedItemIds.isNotEmpty(),
-                        onClick = {
-                            templateViewModel.createTemplate(
-                                name = name,
-                                itemIds = selectedItemIds.toList(),
-                                onSuccess = { isSuccess = true }
-                            )
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp),
+                            enabled = name.isNotBlank() && selectedItemIds.isNotEmpty(),
+                            onClick = {
+                                templateViewModel.createTemplate(
+                                    name = name,
+                                    itemIds = selectedItemIds.toList(),
+                                    onSuccess = { isSuccess = true }
+                                )
+                            }
+                        ) {
+                            Text("Create Template")
                         }
-                    ) {
-                        Text("Create Template")
                     }
                 }
             }
@@ -203,6 +228,7 @@ fun SelectableItemCard(
         }
     }
 }
+
 @Composable
 fun TemplateSuccessView() {
     Column(

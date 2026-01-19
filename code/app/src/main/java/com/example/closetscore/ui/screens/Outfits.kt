@@ -32,6 +32,9 @@ import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.HeaderText
 import com.example.closetscore.ui.components.TemplateCard
 import com.example.closetscore.ui.navigation.Screen
+import com.example.closetscore.ui.theme.Black
+import com.example.closetscore.ui.theme.DarkGrey
+import com.example.closetscore.ui.theme.Grey
 import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
@@ -43,31 +46,35 @@ fun OutfitsScreen(
 ) {
     val templatesList by templateViewModel.templatesWithItems.collectAsState()
 
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate(Screen.Template.route)
-                },
-                containerColor = Red,
-                contentColor = White,
-                shape = RoundedCornerShape(18.dp)
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Create outfit")
-            }
-        }
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Box(modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .offset(y = (-8).dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .offset(y = (-8).dp)
             ) {
-                HeaderText("Your Outfits")
+                Box(modifier = Modifier.align(Alignment.CenterStart)) {
+                    HeaderText("Your Outfits")
+                }
+
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate(Screen.Template.route)
+                    },
+                    containerColor = Grey,
+                    contentColor = Black,
+                    shape = RoundedCornerShape(18.dp),
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Create outfit")
+                }
             }
+
             if (templatesList.isEmpty()) {
                 Box(
                     modifier = Modifier

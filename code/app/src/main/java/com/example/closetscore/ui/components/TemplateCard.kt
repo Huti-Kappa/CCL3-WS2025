@@ -72,7 +72,7 @@ fun TemplateCard(
                     }
                 }
             }
-            
+
             FilledIconButton(
                 onClick = {
                     templateViewModel.incrementTemplateWearCount(templateWithItems.template.id)
