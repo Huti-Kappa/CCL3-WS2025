@@ -38,12 +38,9 @@ fun ItemGrid(navController: NavController, itemsList: List<Item>, currentScore: 
         verticalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(16.dp)
     ) {
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            HeaderText(currentScore.toString())
-        }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
-            Score()
+            Score(currentScore)
         }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
