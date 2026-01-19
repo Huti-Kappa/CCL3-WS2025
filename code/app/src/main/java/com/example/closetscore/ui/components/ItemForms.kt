@@ -21,6 +21,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,17 +56,12 @@ fun AddItemGrid(
 ){
     val state by itemViewModel.formState.collectAsStateWithLifecycle()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Scaffold(
+        topBar = {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(16.dp)
 
             ) {
                 IconButton(
@@ -83,103 +79,111 @@ fun AddItemGrid(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
-            //HorizontalDivider(thickness = 1.dp, color = DarkGrey)
         }
-
-        AddImage(
-            photoUri = state.photoUri,
-            onUriChange = itemViewModel::updatePhotoUri
-        )
-
-        NameSection(
-            name = state.name,
-            onNameChange = itemViewModel::updateName,
-            category = state.category,
-            onCategoryChange = itemViewModel::updateCategory,
-        )
-
-        PurchaseSection(
-            price = state.price,
-            onPriceChange = itemViewModel::updatePrice,
-            date = state.dateString,
-            onDateSelected = itemViewModel::updateDate,
-            brandName = state.brandName,
-            onBrandChange = itemViewModel::updateBrandName,
-        )
-
-        ScoringSection(
-            brandType = state.brandType,
-            onBrandTypeChange = itemViewModel::updateBrandType,
-            material = state.material,
-            onMaterialChange = itemViewModel::updateMaterial,
-            isSecondHand = state.isSecondHand,
-            onSecondHandChange = itemViewModel::updateIsSecondHand,
-        )
-
-        TimesWornSection(
-            wearCount = state.wearCount,
-            onWearChange = itemViewModel::updateWearCount,
-        )
-
-        Button(
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp, bottom = 32.dp),
-            enabled = state.name.isNotBlank() && state.category != null,
-            colors = ButtonDefaults.buttonColors(containerColor = Red),
-            onClick = {
-                val finalPrice = state.price.toDoubleOrNull() ?: 0.0
+                .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            AddImage(
+                photoUri = state.photoUri,
+                onUriChange = itemViewModel::updatePhotoUri
+            )
 
-                val finalDate = if (state.dateString.isNotBlank()) {
-                    try {
-                        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                        LocalDate.parse(state.dateString, formatter)
-                    } catch (e: Exception) {
+            NameSection(
+                name = state.name,
+                onNameChange = itemViewModel::updateName,
+                category = state.category,
+                onCategoryChange = itemViewModel::updateCategory,
+            )
+
+            PurchaseSection(
+                price = state.price,
+                onPriceChange = itemViewModel::updatePrice,
+                date = state.dateString,
+                onDateSelected = itemViewModel::updateDate,
+                brandName = state.brandName,
+                onBrandChange = itemViewModel::updateBrandName,
+            )
+
+            ScoringSection(
+                brandType = state.brandType,
+                onBrandTypeChange = itemViewModel::updateBrandType,
+                material = state.material,
+                onMaterialChange = itemViewModel::updateMaterial,
+                isSecondHand = state.isSecondHand,
+                onSecondHandChange = itemViewModel::updateIsSecondHand,
+            )
+
+            TimesWornSection(
+                wearCount = state.wearCount,
+                onWearChange = itemViewModel::updateWearCount,
+            )
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, bottom = 32.dp),
+                enabled = state.name.isNotBlank() && state.category != null,
+                colors = ButtonDefaults.buttonColors(containerColor = Red),
+                onClick = {
+                    val finalPrice = state.price.toDoubleOrNull() ?: 0.0
+
+                    val finalDate = if (state.dateString.isNotBlank()) {
+                        try {
+                            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                            LocalDate.parse(state.dateString, formatter)
+                        } catch (e: Exception) {
+                            LocalDate.now()
+                        }
+                    } else {
                         LocalDate.now()
                     }
-                } else {
-                    LocalDate.now()
-                }
 
-                if (state.category != null) {
-                    if (isEditMode) {
-                        val updatedItem = ItemEntity(
-                            id = state.id,
-                            name = state.name,
-                            category = state.category!!,
-                            price = finalPrice,
-                            dateAcquired = finalDate,
-                            brandName = state.brandName.ifBlank { null },
-                            brandType = state.brandType,
-                            material = state.material,
-                            isSecondHand = state.isSecondHand,
-                            wearCount = state.wearCount,
-                            photoUri = state.photoUri.ifBlank { null }
-                        )
-                        itemViewModel.updateItem(updatedItem)
-                    } else {
-                        val newItem = Item(
-                            name = state.name,
-                            category = state.category!!,
-                            price = finalPrice,
-                            dateAcquired = finalDate,
-                            brandName = state.brandName.ifBlank { null },
-                            brandType = state.brandType,
-                            material = state.material,
-                            isSecondHand = state.isSecondHand,
-                            wearCount = state.wearCount,
-                            photoUri = state.photoUri.ifBlank { null }
-                        )
-                        itemViewModel.addItem(newItem)
+                    if (state.category != null) {
+                        if (isEditMode) {
+                            val updatedItem = ItemEntity(
+                                id = state.id,
+                                name = state.name,
+                                category = state.category!!,
+                                price = finalPrice,
+                                dateAcquired = finalDate,
+                                brandName = state.brandName.ifBlank { null },
+                                brandType = state.brandType,
+                                material = state.material,
+                                isSecondHand = state.isSecondHand,
+                                wearCount = state.wearCount,
+                                photoUri = state.photoUri.ifBlank { null }
+                            )
+                            itemViewModel.updateItem(updatedItem)
+                        } else {
+                            val newItem = Item(
+                                name = state.name,
+                                category = state.category!!,
+                                price = finalPrice,
+                                dateAcquired = finalDate,
+                                brandName = state.brandName.ifBlank { null },
+                                brandType = state.brandType,
+                                material = state.material,
+                                isSecondHand = state.isSecondHand,
+                                wearCount = state.wearCount,
+                                photoUri = state.photoUri.ifBlank { null }
+                            )
+                            itemViewModel.addItem(newItem)
+                        }
+                        onSuccess()
                     }
-                    onSuccess()
                 }
+            ) {
+                Text(
+                    if (isEditMode) "Save Changes" else "Add to Closet",
+                    modifier = Modifier.padding(8.dp)
+                )
             }
-        ) {
-            Text(
-                if (isEditMode) "Save Changes" else "Add to Closet",
-                modifier = Modifier.padding(8.dp)
-            )
         }
     }
 }

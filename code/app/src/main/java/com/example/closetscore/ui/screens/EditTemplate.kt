@@ -112,7 +112,7 @@ fun EditTemplateScreen(
             label = "SuccessAnimation"
         ) { success ->
             if (success) {
-                EditTemplateSuccessView()
+                TemplateSuccessView()
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 128.dp),
