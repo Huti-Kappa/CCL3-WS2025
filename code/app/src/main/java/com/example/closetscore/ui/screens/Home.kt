@@ -40,7 +40,7 @@ fun ItemGrid(navController: NavController, itemsList: List<Item>, currentScore: 
     ) {
 
         item(span = { GridItemSpan(maxLineSpan) }) {
-            Score(currentScore)
+            Score()
         }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
