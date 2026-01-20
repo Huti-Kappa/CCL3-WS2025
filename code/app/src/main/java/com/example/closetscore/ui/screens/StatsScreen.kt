@@ -7,6 +7,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Checkroom
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,20 +16,23 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.HeaderText
 import com.example.closetscore.ui.theme.*
+import com.example.closetscore.ui.viewmodel.ScoreViewModel
 
 @Composable
-fun StatsScreen(navController: NavController) {
-    val x = 78
+fun StatsScreen(navController: NavController, scoreViewModel: ScoreViewModel= viewModel(factory = AppViewModelProvider.Factory)) {
+    val currentScore by scoreViewModel.score.collectAsState()
     Column(modifier = Modifier.padding(16.dp)) {
         HeaderText("Dashboard")
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            MainScore(x)
+            MainScore(currentScore)
             Spacer(modifier = Modifier.width(16.dp))
             Column(
                 modifier = Modifier.weight(1f),
