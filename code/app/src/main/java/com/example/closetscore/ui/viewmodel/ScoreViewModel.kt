@@ -33,6 +33,9 @@ class ScoreViewModel(repository: ItemRepository) : ViewModel() {
 
     private fun calculateLogic(items: List<Item>): Int {
         var score = 0
+        if(items.isEmpty()){
+            return 0
+        }
         items.forEach { item ->
             score += calculateValue(item)
         }
