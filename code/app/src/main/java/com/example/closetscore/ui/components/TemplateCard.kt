@@ -19,8 +19,10 @@ import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.db.TemplateWithItems
 import com.example.closetscore.ui.theme.Green
 import androidx.compose.runtime.*
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.closetscore.ui.AppViewModelProvider
+import com.example.closetscore.ui.theme.DarkestGrey
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
@@ -59,6 +61,11 @@ fun TemplateCard(
                     text = templateWithItems.template.name,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "${templateWithItems.template.wearCount} Wears",
+                    fontSize = 12.sp,
+                    color = DarkestGrey
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

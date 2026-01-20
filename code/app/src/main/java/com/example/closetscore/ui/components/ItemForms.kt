@@ -197,11 +197,11 @@ fun NameSection(
 ) {
     SectionContainer {
         BasicInputField(
-            label = "Item Name",
+            label = "Item Name*",
             value = name,
             onValueChange = onNameChange
         )
-        LabelText("Category")
+        LabelText("Category*")
         val categoryOptions = ItemCategory.entries.map { it.name.replace("_", " ") }
         SegmentedEnumSelector(
             options = categoryOptions,
@@ -225,7 +225,7 @@ fun PurchaseSection(
 ) {
     SectionContainer {
         PriceInputField(
-            label = "Item Price",
+            label = "Item Price*",
             value = price,
             onValueChange = onPriceChange,
         )

@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,18 +45,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.closetscore.data.Item
-import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.db.TemplateWithItems
 import com.example.closetscore.ui.AppViewModelProvider
-import com.example.closetscore.ui.components.AddItemGrid
 import com.example.closetscore.ui.components.ItemCard
 import com.example.closetscore.ui.components.SuccessView
+import com.example.closetscore.ui.components.TimesWornSection
 import com.example.closetscore.ui.navigation.Screen
 import com.example.closetscore.ui.theme.Black
-import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
@@ -94,11 +92,18 @@ fun TemplateDetailScreen(
         if (success) {
             SuccessView(SuccessText = "Deleted Template!")
         } else {
-            TemplateDetailComponents(navController,templateId, templateViewModel, navigateBack, navigateToEdit, itemViewModel, onSuccessChange = { isSuccess = true })
+            TemplateDetailComponents(
+                navController,
+                templateId,
+                templateViewModel,
+                navigateBack,
+                navigateToEdit,
+                itemViewModel,
+                onSuccessChange = { isSuccess = true }
+            )
         }
     }
 }
-
 
 @Composable
 fun TemplateDetailComponents(
@@ -112,10 +117,16 @@ fun TemplateDetailComponents(
 ) {
     var templateWithItems by remember { mutableStateOf<TemplateWithItems?>(null) }
     var isLoading by remember { mutableStateOf(true) }
+    var wearCount by remember { mutableIntStateOf(0) }
     val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(templateId) {
         withContext(Dispatchers.IO) {
-            templateWithItems = templateViewModel.repository.getTemplateWithItems(templateId)
+            val loaded = templateViewModel.repository.getTemplateWithItems(templateId)
+            templateWithItems = loaded
+            loaded?.let {
+                wearCount = it.template.wearCount
+            }
             isLoading = false
         }
     }
@@ -236,7 +247,7 @@ fun TemplateDetailComponents(
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
-                                        text = template.template.wearCount.toString(),
+                                        text = wearCount.toString(),
                                         style = MaterialTheme.typography.headlineSmall,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -245,6 +256,22 @@ fun TemplateDetailComponents(
                         }
                     }
 
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        TimesWornSection(
+                            wearCount = wearCount,
+                            onWearChange = { newCount ->
+                                wearCount = newCount
+                                templateWithItems = templateWithItems?.let { current ->
+                                    val updatedEntity = current.template.copy(wearCount = newCount)
+                                    // Save to DB using the standard update function (passing the whole object)
+                                    templateViewModel.updateTemplate(updatedEntity)
+
+                                    // Update local state
+                                    current.copy(template = updatedEntity)
+                                }
+                            },
+                        )
+                    }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
@@ -277,20 +304,17 @@ fun TemplateDetailComponents(
                                     id = item.id,
                                     name = item.name,
                                     photoUri = item.photoUri,
-
                                     brandName = item.brandName,
                                     brandType = item.brandType,
                                     material = item.material,
-
                                     category = item.category,
                                     price = item.price,
                                     isSecondHand = item.isSecondHand,
                                     wearCount = item.wearCount,
-
                                     dateAcquired = item.dateAcquired,
                                     status = item.status
                                 ),
-                                onClick = {navController.navigate("${Screen.ItemDetail.route}/${item.id}")},
+                                onClick = { navController.navigate("${Screen.ItemDetail.route}/${item.id}") },
                                 onIncrementWear = { refreshData() },
                                 itemViewModel = itemViewModel
                             )
@@ -325,8 +349,8 @@ fun TemplateDetailComponents(
                                         modifier = Modifier.padding(end = 12.dp)
                                     )
                                     Text(
-                                        text = if (template.template.wearCount > 0) {
-                                            "You've worn this outfit ${template.template.wearCount} time${if (template.template.wearCount > 1) "s" else ""}"
+                                        text = if (wearCount > 0) {
+                                            "You've worn this outfit $wearCount time${if (wearCount > 1) "s" else ""}"
                                         } else {
                                             "Start wearing this outfit to track insights"
                                         },
@@ -339,33 +363,6 @@ fun TemplateDetailComponents(
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Button(
-                            onClick = {
-                                templateViewModel.incrementTemplateWearCount(templateId)
-
-                                template.items.forEach { item ->
-                                    itemViewModel.incrementWearCount(item.id)
-                                }
-                                refreshData()
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp)
-                                .padding(vertical = 8.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Red,
-                                contentColor = White
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text(
-                                text = "I'm wearing this today",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Button(
                             onClick = navigateToEdit,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -373,7 +370,7 @@ fun TemplateDetailComponents(
                                 .padding(vertical = 8.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = White,
-                                contentColor = com.example.closetscore.ui.theme.Black
+                                contentColor = Black
                             ),
                             shape = RoundedCornerShape(12.dp)
                         ) {
@@ -398,7 +395,6 @@ fun TemplateDetailComponents(
                                 contentColor = Black
                             ),
                             shape = RoundedCornerShape(12.dp)
-
                         ) {
                             Text(
                                 text = "Delete Template",

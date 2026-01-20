@@ -120,7 +120,7 @@ fun TemplateCreateScreen(
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         BasicInputField(
-                            label = "Template Name",
+                            label = "Template Name*",
                             value = name,
                             onValueChange = { name = it }
                         )
@@ -128,7 +128,7 @@ fun TemplateCreateScreen(
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
-                            text = "Select Items for Template",
+                            text = "Select Items for Template*",
                             style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                         )
