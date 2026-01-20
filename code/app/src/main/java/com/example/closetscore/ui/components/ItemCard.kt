@@ -44,6 +44,7 @@ import com.example.closetscore.ui.viewmodel.ItemViewModel
 fun ItemCard(
     item: Item,
     onClick: () -> Unit,
+    onIncrementWear: () -> Unit = {},
     itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -94,6 +95,22 @@ fun ItemCard(
                     Text(text = "No Image", color = DarkGrey, fontSize = 12.sp)
                 }
             }
+            if (item.isSecondHand) {
+                Text(
+                    text = "Thrifted",
+                    color = White,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .background(
+                            color = LightGreen,
+                            shape = CircleShape
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
         }
 
         Row(
@@ -108,7 +125,10 @@ fun ItemCard(
             }
 
             FilledIconButton(
-                onClick = { itemViewModel.incrementWearCount(item.id) },
+                onClick = {
+                    itemViewModel.incrementWearCount(item.id)
+                    onIncrementWear()
+                          },
                 modifier = Modifier.size(42.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(

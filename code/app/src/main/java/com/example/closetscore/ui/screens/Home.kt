@@ -31,19 +31,16 @@ fun HomeScreen(navController: NavController, itemViewModel: ItemViewModel = view
 }
 
 @Composable
-fun ItemGrid(navController: NavController, itemsList: List<Item>, currentScore: Double) {
+fun ItemGrid(navController: NavController, itemsList: List<Item>, currentScore: Int) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(16.dp)
     ) {
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            HeaderText(currentScore.toString())
-        }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
-            Score()
+            Score(currentScore)
         }
 
         item(span = { GridItemSpan(maxLineSpan) }) {

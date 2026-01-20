@@ -1,10 +1,8 @@
 package com.example.closetscore.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,7 +15,7 @@ import com.example.closetscore.ui.theme.Green
 
 
 @Composable
-fun Score() {
+fun Score(currentScore: Int) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,7 +33,7 @@ fun Score() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Closet Score",
+                text = currentScore.toString(),
                 fontSize = 48.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.White
