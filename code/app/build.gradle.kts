@@ -61,7 +61,7 @@ dependencies {
     // viewModel() function
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
     implementation("io.coil-kt:coil-compose:2.5.0")
-    implementation("io.github.ehsannarmani:compose-charts:0.1.0")
+    implementation("io.github.ehsannarmani:compose-charts:0.1.7")
     implementation(libs.androidx.core.ktx)
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation(libs.androidx.lifecycle.runtime.ktx)

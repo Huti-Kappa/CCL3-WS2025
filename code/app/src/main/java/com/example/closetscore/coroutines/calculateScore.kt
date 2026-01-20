@@ -1,13 +1,21 @@
 package com.example.closetscore.coroutines
 
+import android.util.Log
 import com.example.closetscore.data.Item
 import com.example.closetscore.db.BrandType
 import com.example.closetscore.db.ItemStatus
 import com.example.closetscore.db.MaterialType
+import java.time.LocalDate
 import kotlin.collections.forEach
 
+data class GraphPoint(
+    val date: LocalDate,
+    val price: Double,
+    val label: String
+)
 fun calculateThriftAvg(items: List<Item>): Double{
     if(items.isEmpty()){return 0.0}
+    calculatePrice(items)
     var amount = 0
     items.forEach { item ->
         if(item.isSecondHand){
@@ -16,6 +24,34 @@ fun calculateThriftAvg(items: List<Item>): Double{
     }
     return amount/items.size.toDouble()*100
 }
+
+fun calculatePrice(items: List<Item>): List<GraphPoint> {
+    val sortedItems = items.filter { it.status == ItemStatus.ACTIVE }.sortedBy { it.dateAcquired }
+    val groupedByMonth = sortedItems.groupBy {
+        it.dateAcquired.withDayOfMonth(1)
+    }
+    val points = mutableListOf<GraphPoint>()
+    val months = groupedByMonth.keys.sorted()
+    var currentTotalValue = 0.0
+    Log.d("LOLLOL", months.toString())
+
+    for (monthDate in months) {
+        val itemsInMonth = groupedByMonth[monthDate] ?: emptyList()
+        val monthlySum = itemsInMonth.sumOf { it.price }
+
+        currentTotalValue += monthlySum
+
+        points.add(
+            GraphPoint(
+                date = monthDate,
+                price = currentTotalValue,
+                label = monthDate.month.name.take(3)
+            )
+        )
+    }
+    return points
+}
+
 fun calculateLogic(items: List<Item>): Int {
     var score = 0
     if(items.isEmpty()){

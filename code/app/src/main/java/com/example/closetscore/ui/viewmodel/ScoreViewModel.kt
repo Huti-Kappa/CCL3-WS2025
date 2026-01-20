@@ -2,9 +2,12 @@ package com.example.closetscore.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.closetscore.coroutines.GraphPoint
 import com.example.closetscore.coroutines.calculateLogic
+import com.example.closetscore.coroutines.calculatePrice
 import com.example.closetscore.coroutines.calculateThriftAvg
 import com.example.closetscore.data.ItemRepository
+import ir.ehsannarmani.compose_charts.extensions.format
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -44,5 +47,15 @@ class ScoreViewModel(repository: ItemRepository) : ViewModel() {
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = statsEntryUiState()
+        )
+
+    val graphPoints: StateFlow<List<GraphPoint>> = repository.items
+        .map { items ->
+            calculatePrice(items)
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
         )
 }

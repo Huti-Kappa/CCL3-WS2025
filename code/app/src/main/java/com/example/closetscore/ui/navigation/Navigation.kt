@@ -45,7 +45,7 @@ fun Navigation(
         }
 
         composable(Screen.Stats.route) {
-            StatsScreen(navController = navController)
+            StatsScreen()
         }
 
         composable(Screen.Create.route) {

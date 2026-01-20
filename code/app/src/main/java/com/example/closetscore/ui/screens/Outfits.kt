@@ -35,6 +35,7 @@ import com.example.closetscore.ui.navigation.Screen
 import com.example.closetscore.ui.theme.Black
 import com.example.closetscore.ui.theme.DarkGrey
 import com.example.closetscore.ui.theme.Grey
+import com.example.closetscore.ui.theme.LightGreen
 import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
@@ -66,8 +67,8 @@ fun OutfitsScreen(
                     onClick = {
                         navController.navigate(Screen.Template.route)
                     },
-                    containerColor = Grey,
-                    contentColor = Black,
+                    containerColor = LightGreen,
+                    contentColor = White,
                     shape = RoundedCornerShape(18.dp),
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
