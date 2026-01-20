@@ -14,16 +14,15 @@
             display: flex;
             flex-direction: row;
             width: 100%;
-            gap: 8px; /* Kleiner Abstand zwischen den Bildern */
+            gap: 8px; 
         }
 
-        /* Das hier ist der wichtige Teil: */
         .imag img {
-            flex: 1;       /* Jedes Bild nimmt gleich viel Platz ein */
-            width: 0;      /* Trick: Setzt Basisbreite auf 0, damit flex greift */
-            min-width: 0;  /* Erlaubt dem Bild, kleiner als seine Pixelgröße zu werden */
-            height: auto;  /* Behält das Seitenverhältnis bei */
-            object-fit: contain; /* Stellt sicher, dass nichts abgeschnitten wird */
+            flex: 1;       
+            width: 0;      
+            min-width: 0;  
+            height: auto;  
+            object-fit: contain; 
         }
     </style>
 </head>
@@ -84,7 +83,7 @@
             <img src="./images/stats.png" alt="Stats">
         </section>
 
-        <section class="mb-24 border-t border-black pt-8">
+        <section class="mb-20 border-t border-black pt-8">
             <h2 class="text-sm font-bold uppercase tracking-widest mb-6">Prototype</h2>
             
             <p class="text-gray-500 mb-6 text-sm">
@@ -103,6 +102,152 @@
                 <a href="https://www.figma.com/design/yL4Oi7BfJUhoeOwRFKYfen/Wardrobe-stats-v1?node-id=1-3&t=noufMavb8NvKJGw2-1" target="_blank" class="text-sm text-gray-400 underline hover:text-black">
                     Open in Figma
                 </a>
+            </div>
+        </section>
+
+        <section class="mb-24 border-t border-black pt-8">
+            <h2 class="text-sm font-bold uppercase tracking-widest mb-6">Usability</h2>
+
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold mb-4">Test Plan</h3>
+                
+                <div class="mb-8">
+                    <h4 class="font-bold text-lg mb-2">Hypothesis</h4>
+                    <p class="text-gray-600 leading-relaxed">
+                        We hypothesize that users will be able to complete all core tasks with a completion rate of at least 90%. 
+                        Furthermore, we predict a System Usability Scale (SUS) score of >70, indicating 'Good' usability despite minor heuristic issues.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">Data to Collect</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1">
+                            <li><strong>Time on Task:</strong> Time taken to add a new item.</li>
+                            <li><strong>Completion Rate:</strong> Success/Failure per task.</li>
+                            <li><strong>SEQ:</strong> Rated 1-7 after each task.</li>
+                            <li><strong>SUS Score:</strong> Overall usability score.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">Methods</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1">
+                            <li><strong>Task-Based Usability Testing:</strong> See scenarios below.</li>
+                            <li><strong>Standardized Questionnaires:</strong> System Usability Scale (SUS).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Core Tasks & Scenarios</h4>
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 p-6 rounded-lg border border-gray-100">
+                            <h5 class="font-bold mb-2">1. Create 1 Item & Find it</h5>
+                            <p class="text-gray-600 italic text-sm mb-2">
+                                "Imagine you just bought a new shirt for €20. Take a photo of it (or use a placeholder) and add it to your closet with today's purchase date. Once you are done, find that new shirt in your main Closet list to make sure it saved."
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg border border-gray-100">
+                            <h5 class="font-bold mb-2">2. Increase Wear Count & Edit Item</h5>
+                            <p class="text-gray-600 italic text-sm mb-2">
+                                "You just wore your 'Green Shirt' again, so please increase its wear count by 1. Afterward, you realized you actually paid a different price for it. Find the Edit screen and change the price to €25."
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg border border-gray-100">
+                            <h5 class="font-bold mb-2">3. Manage Outfits (Create, Edit, Delete)</h5>
+                            <p class="text-gray-600 italic text-sm mb-2">
+                                "You are planning a look for tomorrow. Create a new collection named 'Date Night' and add two items to it. After creating it, decide that one item doesn't look right and remove it from the collection."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-2xl font-bold mb-6">Heuristic Evaluation (Nielsen)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-black text-sm uppercase tracking-wider">
+                                <th class="py-3 pr-4 w-1/4">Heuristic</th>
+                                <th class="py-3 pr-4 w-2/4">Description</th>
+                                <th class="py-3 w-1/4 text-right">Severity</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600 text-sm">
+                            <tr class="border-b border-gray-200">
+                                <td class="py-4 pr-4 font-medium text-black">Visibility of system status</td>
+                                <td class="py-4 pr-4">
+                                    When the user taps the + button, the system updates the status (number goes up), but the visual feedback is so subtle that the user misses it.
+                                </td>
+                                <td class="py-4 text-right font-mono">3</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-4 pr-4 font-medium text-black">Match between system and real world</td>
+                                <td class="py-4 pr-4">
+                                    Terminology "MVPs". If users are not familiar with this abbreviation it might cause confusion.
+                                </td>
+                                <td class="py-4 text-right font-mono">1</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-4 pr-4 font-medium text-black">User control and freedom</td>
+                                <td class="py-4 pr-4">
+                                    Lack of "Undo" for wear counts. The item card has a + button, but no visible - button or "Undo" option if clicked by mistake.
+                                </td>
+                                <td class="py-4 text-right font-mono">4</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-4 pr-4 font-medium text-black">Consistency and standards</td>
+                                <td class="py-4 pr-4">
+                                    Inconsistent Header Behavior. On Outfit Detail, the nav bar is "sticky". On Add Item, it scrolls away.
+                                </td>
+                                <td class="py-4 text-right font-mono">2</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-4 pr-4 font-medium text-black">Error prevention</td>
+                                <td class="py-4 pr-4">
+                                    "I'm wearing this today" is active on an empty outfit (0 Items). This template shouldn't show up empty.
+                                </td>
+                                <td class="py-4 text-right font-mono">3</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-4 pr-4 font-medium text-black">Recognition rather than recall</td>
+                                <td class="py-4 pr-4">
+                                    "No Image" Placeholders. Users recognize clothes by visual recognition, not by reading "Green Shirt".
+                                </td>
+                                <td class="py-4 text-right font-mono">1</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-4 pr-4 font-medium text-black">Flexibility and efficiency</td>
+                                <td class="py-4 pr-4">
+                                    Missing Filters in Closet/Home. Cannot filter by Category or sort by "least worn".
+                                </td>
+                                <td class="py-4 text-right font-mono">4</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-4 pr-4 font-medium text-black">Aesthetic and minimalist design</td>
+                                <td class="py-4 pr-4">
+                                    Dashboard Visual Hierarchy. The "Total Wears" count (e.g., "78") is decorative but consumes 50% of screen real estate, obscuring data.
+                                </td>
+                                <td class="py-4 text-right font-mono">2</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-4 pr-4 font-medium text-black">Help users recognize errors</td>
+                                <td class="py-4 pr-4">
+                                    Rigid Date Input Format. The "Purchase Date" field requires a specific, unexplained format.
+                                </td>
+                                <td class="py-4 text-right font-mono">1</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 pr-4 font-medium text-black">Help and documentation</td>
+                                <td class="py-4 pr-4">
+                                    Unexplained Scores. Users unfamiliar with the app won't understand what the large "78" metric stands for.
+                                </td>
+                                <td class="py-4 text-right font-mono">2</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
