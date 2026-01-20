@@ -245,6 +245,33 @@ fun TemplateDetailComponents(
                         }
                     }
 
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Button(
+                            onClick = {
+                                templateViewModel.incrementTemplateWearCount(templateId)
+
+                                template.items.forEach { item ->
+                                    itemViewModel.incrementWearCount(item.id)
+                                }
+                                refreshData()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Red,
+                                contentColor = White
+                            ),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(
+                                text = "I'm wearing this today",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
@@ -337,33 +364,7 @@ fun TemplateDetailComponents(
                         }
                     }
 
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Button(
-                            onClick = {
-                                templateViewModel.incrementTemplateWearCount(templateId)
 
-                                template.items.forEach { item ->
-                                    itemViewModel.incrementWearCount(item.id)
-                                }
-                                refreshData()
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp)
-                                .padding(vertical = 8.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Red,
-                                contentColor = White
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text(
-                                text = "I'm wearing this today",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Button(
                             onClick = navigateToEdit,

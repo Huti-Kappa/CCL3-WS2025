@@ -236,6 +236,7 @@ fun ItemDetailComponent(
                         }
                     }
 
+
                     Card(
                         modifier = Modifier.weight(1f),
                         colors = CardDefaults.cardColors(
@@ -262,6 +263,22 @@ fun ItemDetailComponent(
                             )
                         }
                     }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = {
+                        itemViewModel.incrementWearCount(itemId)
+                        coroutineScope.launch(Dispatchers.IO) {
+                            item = itemViewModel.repository.getItemById(itemId)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Red, contentColor = White),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("I'm wearing this today", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -331,21 +348,7 @@ fun ItemDetailComponent(
                     Text("Delete Item", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
 
-                Button(
-                    onClick = {
-                        itemViewModel.incrementWearCount(itemId)
-                        coroutineScope.launch(Dispatchers.IO) {
-                            item = itemViewModel.repository.getItemById(itemId)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Red, contentColor = White),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text("I'm wearing this today", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                }
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
