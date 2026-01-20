@@ -1,8 +1,9 @@
 package com.example.closetscore.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
-val Green = Color(0xFF214E34)
+val Green= Color(0xFF214E34)
 val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF151515)
 val Grey = Color(0xFFF2F2F2)
