@@ -6,6 +6,16 @@ import com.example.closetscore.db.ItemStatus
 import com.example.closetscore.db.MaterialType
 import kotlin.collections.forEach
 
+fun calculateThriftAvg(items: List<Item>): Double{
+    if(items.isEmpty()){return 0.0}
+    var amount = 0
+    items.forEach { item ->
+        if(item.isSecondHand){
+            amount++;
+        }
+    }
+    return amount/items.size.toDouble()*100
+}
 fun calculateLogic(items: List<Item>): Int {
     var score = 0
     if(items.isEmpty()){
