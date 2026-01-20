@@ -9,6 +9,7 @@ import com.example.closetscore.db.TemplateWithItems
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -63,6 +64,16 @@ class TemplateViewModel(
         viewModelScope.launch {
             try {
                 repository.incrementWearCount(templateId)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun updateTemplateWearCount(templateEntity: TemplateEntity) {
+        viewModelScope.launch {
+            try {
+                repository.updateTemplateWearCount(templateEntity)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
