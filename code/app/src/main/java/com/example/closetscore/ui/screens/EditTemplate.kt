@@ -24,15 +24,19 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,7 +45,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -50,6 +53,7 @@ import com.example.closetscore.db.TemplateEntity
 import com.example.closetscore.db.TemplateWithItems
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.BasicInputField
+import com.example.closetscore.ui.components.TimesWornSection
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
 import kotlinx.coroutines.Dispatchers
@@ -66,10 +70,11 @@ fun EditTemplateScreen(
 ) {
     var template by remember { mutableStateOf<TemplateWithItems?>(null) }
     var isLoading by remember { mutableStateOf(true) }
+    var isSuccess by remember { mutableStateOf(false) }
 
     var name by remember { mutableStateOf("") }
+    var wearCount by remember { mutableIntStateOf(0) }
     var selectedItemIds by remember { mutableStateOf<Set<Int>>(emptySet()) }
-    var isSuccess by remember { mutableStateOf(false) }
 
     val itemsList by itemViewModel.repository.items.collectAsState(initial = emptyList())
 
@@ -80,9 +85,9 @@ fun EditTemplateScreen(
 
             if (loadedTemplate != null) {
                 name = loadedTemplate.template.name
+                wearCount = loadedTemplate.template.wearCount
                 selectedItemIds = loadedTemplate.items.map { it.id }.toSet()
             }
-
             isLoading = false
         }
     }
@@ -94,91 +99,127 @@ fun EditTemplateScreen(
         }
     }
 
-    if (isLoading) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("Loading...")
-        }
-    } else {
-        AnimatedContent(
-            targetState = isSuccess,
-            transitionSpec = {
-                (fadeIn(animationSpec = tween(500)) + scaleIn()) togetherWith
-                        fadeOut(animationSpec = tween(300))
-            },
-            label = "SuccessAnimation"
-        ) { success ->
-            if (success) {
-                TemplateSuccessView()
-            } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 128.dp),
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                    contentPadding = PaddingValues(16.dp)
+    Scaffold(
+        topBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                IconButton(
+                    onClick = navigateBack,
+                    modifier = Modifier.align(Alignment.CenterStart)
                 ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+                Text(
+                    text = "Edit Outfit",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
+    ) { paddingValues ->
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Loading...")
+            }
+        } else {
+            AnimatedContent(
+                targetState = isSuccess,
+                transitionSpec = {
+                    (fadeIn(animationSpec = tween(500)) + scaleIn()) togetherWith
+                            fadeOut(animationSpec = tween(300))
+                },
+                label = "SuccessAnimation",
+                modifier = Modifier.padding(paddingValues)
+            ) { success ->
+                if (success) {
+                    EditTemplateSuccessView()
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(minSize = 128.dp),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(24.dp),
+                        contentPadding = PaddingValues(16.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
 
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        BasicInputField(
-                            label = "Template Name",
-                            value = name,
-                            onValueChange = { name = it }
-                        )
-                    }
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            BasicInputField(
+                                label = "Template Name",
+                                value = name,
+                                onValueChange = { name = it }
+                            )
+                        }
 
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Text(
-                            text = "Select Items for Template",
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
-                        )
-                    }
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Text(
+                                text = "Select Items for Template",
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                            )
+                        }
 
-                    items(itemsList) { item ->
-                        SelectableItemCard(
-                            item = item,
-                            isSelected = selectedItemIds.contains(item.id),
-                            onToggleSelection = { itemId ->
-                                selectedItemIds = if (selectedItemIds.contains(itemId)) {
-                                    selectedItemIds - itemId
-                                } else {
-                                    selectedItemIds + itemId
-                                }
-                            }
-                        )
-                    }
-
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Button(
-                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                            enabled = name.isNotBlank() && selectedItemIds.isNotEmpty(),
-                            onClick = {
-                                if (template != null) {
-                                    val updatedTemplate = TemplateEntity(
-                                        id = templateId,
-                                        name = name,
-                                        date = template!!.template.date,
-                                        wearCount = template!!.template.wearCount,
-                                        status = template!!.template.status
-                                    )
-                                    templateViewModel.updateTemplate(updatedTemplate)
-
-                                    template!!.items.forEach { item ->
-                                        templateViewModel.removeItemFromTemplate(templateId, item.id)
+                        items(itemsList) { item ->
+                            SelectableItemCardEdit(
+                                item = item,
+                                isSelected = selectedItemIds.contains(item.id),
+                                onToggleSelection = { itemId ->
+                                    selectedItemIds = if (selectedItemIds.contains(itemId)) {
+                                        selectedItemIds - itemId
+                                    } else {
+                                        selectedItemIds + itemId
                                     }
-
-                                    selectedItemIds.forEach { itemId ->
-                                        templateViewModel.addItemToTemplate(templateId, itemId)
-                                    }
-
-                                    isSuccess = true
                                 }
+                            )
+                        }
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            TimesWornSection(
+                                wearCount = wearCount,
+                                onWearChange = { wearCount = it },
+                            )
+                        }
+
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 16.dp),
+                                enabled = name.isNotBlank() && selectedItemIds.isNotEmpty(),
+                                onClick = {
+                                    if (template != null) {
+                                        val updatedTemplate = TemplateEntity(
+                                            id = templateId,
+                                            name = name,
+                                            date = template!!.template.date,
+                                            wearCount = wearCount,
+                                            status = template!!.template.status
+                                        )
+                                        templateViewModel.updateTemplate(updatedTemplate)
+
+                                        template!!.items.forEach { item ->
+                                            templateViewModel.removeItemFromTemplate(templateId, item.id)
+                                        }
+
+                                        selectedItemIds.forEach { itemId ->
+                                            templateViewModel.addItemToTemplate(templateId, itemId)
+                                        }
+
+                                        isSuccess = true
+                                    }
+                                }
+                            ) {
+                                Text("Save Changes")
                             }
-                        ) {
-                            Text("Save Changes")
                         }
                     }
                 }
