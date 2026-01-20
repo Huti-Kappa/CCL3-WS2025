@@ -54,6 +54,7 @@ import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.db.ItemStatus
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.SuccessView
+import com.example.closetscore.ui.components.TimesWornSection
 import com.example.closetscore.ui.theme.Black
 import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.theme.White
@@ -236,6 +237,7 @@ fun ItemDetailComponent(
                         }
                     }
 
+
                     Card(
                         modifier = Modifier.weight(1f),
                         colors = CardDefaults.cardColors(
@@ -265,6 +267,20 @@ fun ItemDetailComponent(
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
+
+                TimesWornSection(
+                    wearCount = currentItem.wearCount,
+                    onWearChange = { newCount ->
+                        val updatedItem = currentItem.copy(wearCount = newCount)
+                        item = updatedItem
+                        coroutineScope.launch(Dispatchers.IO) {
+                            itemViewModel.repository.updateItem(updatedItem)
+                        }
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
                 Text(
                     text = "Insights",
                     style = MaterialTheme.typography.titleLarge,
@@ -329,22 +345,6 @@ fun ItemDetailComponent(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Delete Item", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = {
-                        itemViewModel.incrementWearCount(itemId)
-                        coroutineScope.launch(Dispatchers.IO) {
-                            item = itemViewModel.repository.getItemById(itemId)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Red, contentColor = White),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text("I'm wearing this today", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -431,8 +431,6 @@ fun ItemDetailComponent(
     }
 }
 
-fun ItemViewModel.incrementWearCount(itemId: Int) {}
-
 @Composable
 fun InfoSection(item: ItemEntity) {
     Card(
@@ -481,7 +479,7 @@ fun InfoRow(label: String, value: String) {
             text = label,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        )   
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
