@@ -32,11 +32,7 @@ import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.HeaderText
 import com.example.closetscore.ui.components.TemplateCard
 import com.example.closetscore.ui.navigation.Screen
-import com.example.closetscore.ui.theme.Black
-import com.example.closetscore.ui.theme.DarkGrey
-import com.example.closetscore.ui.theme.Grey
 import com.example.closetscore.ui.theme.LightGreen
-import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
 

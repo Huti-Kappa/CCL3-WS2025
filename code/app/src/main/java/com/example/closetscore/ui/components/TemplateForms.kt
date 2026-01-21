@@ -63,12 +63,7 @@ fun AddTemplateGrid(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
-            //HorizontalDivider(thickness = 1.dp, color = DarkGrey)
         }
-
-
-
-
     }
-    }
+}
 

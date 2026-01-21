@@ -39,9 +39,6 @@ import com.example.closetscore.db.BrandType
 import com.example.closetscore.db.ItemCategory
 import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.db.MaterialType
-import com.example.closetscore.ui.theme.DarkGrey
-import com.example.closetscore.ui.theme.Green
-import com.example.closetscore.ui.theme.Red
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -129,7 +126,7 @@ fun AddItemGrid(
                     .fillMaxWidth()
                     .padding(top = 16.dp, bottom = 32.dp),
                 enabled = state.name.isNotBlank() && state.category != null,
-                colors = ButtonDefaults.buttonColors(containerColor = Red),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                 onClick = {
                     val finalPrice = state.price.toDoubleOrNull() ?: 0.0
 

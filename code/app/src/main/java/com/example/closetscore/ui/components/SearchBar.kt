@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
@@ -24,14 +27,20 @@ fun SimpleSearchBar(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .semantics { isTraversalGroup = true }
     ) {
         SearchBar(
-            modifier = modifier
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
                 .semantics { traversalIndex = 0f },
             windowInsets = WindowInsets(0.dp),
+            colors = SearchBarDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                dividerColor = MaterialTheme.colorScheme.outline
+            ),
 
             inputField = {
                 SearchBarDefaults.InputField(
@@ -45,7 +54,23 @@ fun SimpleSearchBar(
                     },
                     expanded = false,
                     onExpandedChange = { },
-                    placeholder = { Text("Search your closet...") }
+                    placeholder = {
+                        Text(
+                            text = "Search your closet...",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
             },
             expanded = false,

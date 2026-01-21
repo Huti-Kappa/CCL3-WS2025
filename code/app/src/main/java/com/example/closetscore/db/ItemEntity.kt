@@ -38,7 +38,7 @@ enum class ItemCategory {
     Bottom,
     Shoes,
     Outerwear,
-    One_Piece,
+    Other,
     Accessory
 }
 

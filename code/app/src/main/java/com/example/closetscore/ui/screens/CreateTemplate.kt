@@ -223,7 +223,7 @@ fun SelectableItemCard(
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
                     .size(32.dp)
-                    .background(Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(16.dp))
             )
         }
     }

@@ -30,13 +30,6 @@ import com.example.closetscore.data.Item
 import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.db.ItemStatus
 import com.example.closetscore.ui.AppViewModelProvider
-import com.example.closetscore.ui.theme.Black
-import com.example.closetscore.ui.theme.DarkGrey
-import com.example.closetscore.ui.theme.DarkestGrey
-import com.example.closetscore.ui.theme.Green
-import com.example.closetscore.ui.theme.Grey
-import com.example.closetscore.ui.theme.LightGreen
-import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -49,6 +42,7 @@ fun ItemCard(
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -63,9 +57,11 @@ fun ItemCard(
                     showDeleteDialog = true
                 }
             ),
-        border = BorderStroke(1.dp, Grey),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = White)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Box(
             modifier = Modifier
@@ -73,7 +69,7 @@ fun ItemCard(
                 .fillMaxWidth()
                 .weight(1f)
                 .clip(RoundedCornerShape(12.dp))
-                .background(White)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             if (item.photoUri != null) {
                 AsyncImage(
@@ -89,23 +85,27 @@ fun ItemCard(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(LightGreen.copy(alpha = 0.2f)),
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "No Image", color = DarkGrey, fontSize = 12.sp)
+                    Text(
+                        text = "No Image",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 12.sp
+                    )
                 }
             }
             if (item.isSecondHand) {
                 Text(
                     text = "Thrifted",
-                    color = White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
                         .background(
-                            color = LightGreen,
+                            color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape
                         )
                         .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -128,12 +128,12 @@ fun ItemCard(
                 onClick = {
                     itemViewModel.incrementWearCount(item.id)
                     onIncrementWear()
-                          },
+                },
                 modifier = Modifier.size(42.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = Green,
-                    contentColor = White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 Icon(
@@ -150,6 +150,9 @@ fun ItemCard(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text("Delete Item?") },
             text = { Text("This Item I have ...") },
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
 
             confirmButton = {
                 fun confirmAction(newStatus: ItemStatus) {
@@ -174,21 +177,21 @@ fun ItemCard(
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp) // Space between buttons
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
 
                     OutlinedButton(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { confirmAction(ItemStatus.SOLD) }
                     ) {
-                        Text("Sold", color = Color(0xFF4CAF50)) // Green
+                        Text("Sold", color = Color(0xFF4CAF50))
                     }
 
                     OutlinedButton(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { confirmAction(ItemStatus.DONATED) }
                     ) {
-                        Text("Donated", color = Color(0xFF2196F3)) // Blue
+                        Text("Donated", color = Color(0xFF2196F3))
                     }
 
                     OutlinedButton(
@@ -202,7 +205,7 @@ fun ItemCard(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { confirmAction(ItemStatus.LOST) }
                     ) {
-                        Text("Lost", color = Color.Red)
+                        Text("Lost", color = MaterialTheme.colorScheme.error)
                     }
                     TextButton(onClick = {
                         val ent = ItemEntity(
@@ -223,11 +226,11 @@ fun ItemCard(
                         showDeleteDialog = false }
                     )
                     {
-                        Text("Full Delete (Remove from Score)", color = Color.Red)
+                        Text("Full Delete (Remove from Score)", color = MaterialTheme.colorScheme.error)
                     }
 
                     TextButton(onClick = { showDeleteDialog = false }) {
-                        Text("Cancel")
+                        Text("Cancel", color = MaterialTheme.colorScheme.onSurface)
                     }
                 }
             }
@@ -244,7 +247,7 @@ fun StyledTextCard(item: Item) {
             fontWeight = FontWeight.Bold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            color = Black
+            color = MaterialTheme.colorScheme.onSurface
         )
         val cpwValue = if (item.wearCount > 0) {
             item.price / item.wearCount
@@ -254,7 +257,7 @@ fun StyledTextCard(item: Item) {
         Text(
             text = "${item.wearCount} Wears",
             fontSize = 12.sp,
-            color = DarkestGrey
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = "€%.2f".format(cpwValue),
@@ -262,7 +265,7 @@ fun StyledTextCard(item: Item) {
             fontWeight = FontWeight.Bold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            color = Black
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

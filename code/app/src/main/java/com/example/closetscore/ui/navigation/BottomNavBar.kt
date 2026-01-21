@@ -1,6 +1,7 @@
 package com.example.closetscore.ui.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,25 +13,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.closetscore.ui.theme.Black
-import com.example.closetscore.ui.theme.DarkGrey
-import com.example.closetscore.ui.theme.Red
-import com.example.closetscore.ui.theme.White
 
 @Composable
 fun BottomNavBar(
@@ -58,7 +59,7 @@ fun BottomNavBar(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            Black.copy(alpha = 0.1f)
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f)
                         )
                     )
                 )
@@ -67,17 +68,17 @@ fun BottomNavBar(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(White)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 1.dp,
-                color = DarkGrey
+                color = MaterialTheme.colorScheme.surfaceVariant
             )
 
             NavigationBar(
                 modifier = Modifier,
-                containerColor = White,
+                containerColor = MaterialTheme.colorScheme.background,
                 tonalElevation = 0.dp
             ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -112,12 +113,20 @@ fun BottomNavBar(
                                 launchSingleTop = true
                                 restoreState = false
                             }
-                        }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     )
                 }
                 Spacer(modifier = Modifier.weight(0.2f))
             }
         }
+
         FloatingActionButton(
             onClick = {
                 navController.navigate(Screen.Create.route) {
@@ -128,13 +137,25 @@ fun BottomNavBar(
                     restoreState = true
                 }
             },
-            containerColor = Red,
-            contentColor = White,
-            shape = RoundedCornerShape(18.dp),
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = Color.White,
+            elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp),
+            shape = RoundedCornerShape(22.dp),
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .offset(y = (-22).dp)
-                .size(64.dp)
+                .size(72.dp)
+                .shadow(
+                    elevation = 12.dp,
+                    shape = RoundedCornerShape(22.dp),
+                    spotColor = MaterialTheme.colorScheme.secondary,
+                    ambientColor = MaterialTheme.colorScheme.secondary
+                )
+                .border(
+                    width = 5.dp,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    shape = RoundedCornerShape(22.dp)
+                )
         ) {
             Icon(
                 imageVector = Icons.Default.Add,

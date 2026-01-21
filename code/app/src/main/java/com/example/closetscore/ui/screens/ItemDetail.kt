@@ -55,9 +55,6 @@ import com.example.closetscore.db.ItemStatus
 import com.example.closetscore.ui.AppViewModelProvider
 import com.example.closetscore.ui.components.SuccessView
 import com.example.closetscore.ui.components.TimesWornSection
-import com.example.closetscore.ui.theme.Black
-import com.example.closetscore.ui.theme.Red
-import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -330,7 +327,7 @@ fun ItemDetailComponent(
                 Button(
                     onClick = navigateToEdit,
                     modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = White, contentColor = Black),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onSurface, contentColor = MaterialTheme.colorScheme.background),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Edit Item", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -341,7 +338,7 @@ fun ItemDetailComponent(
                 Button(
                     onClick = { showDeleteDialog = true },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = White, contentColor = Black),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onSurface, contentColor = MaterialTheme.colorScheme.background),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Delete Item", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)

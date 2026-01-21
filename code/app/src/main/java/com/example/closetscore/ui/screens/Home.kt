@@ -11,11 +11,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-
 import androidx.navigation.NavController
 import com.example.closetscore.data.Item
 import com.example.closetscore.ui.AppViewModelProvider
-import com.example.closetscore.ui.components.HeaderText
 import com.example.closetscore.ui.components.ItemCard
 import com.example.closetscore.ui.components.MidTitle
 import com.example.closetscore.ui.components.Score

@@ -40,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -58,7 +57,6 @@ import kotlin.toString
 fun AddImage(
     photoUri: String,
     onUriChange: (String) -> Unit
-
 ) {
     var showImageSelector by remember { mutableStateOf(false) }
     Box(
@@ -74,9 +72,12 @@ fun AddImage(
                     Icons.Outlined.CameraAlt,
                     contentDescription = "Camera",
                     modifier = Modifier.size(128.dp),
-                    tint = Color.Gray.copy(alpha = 0.7f)
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Text(text = "Add Photo")
+                Text(
+                    text = "Add Photo",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         } else {
             Box(
@@ -105,7 +106,7 @@ fun AddImage(
                     Icon(
                         Icons.Default.Close,
                         contentDescription = "Remove photo",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onError,
                         modifier = Modifier.size(18.dp)
                     )
                 }
@@ -115,7 +116,12 @@ fun AddImage(
         if (showImageSelector) {
             AlertDialog(
                 onDismissRequest = { showImageSelector = false },
-                title = { Text("Foto hinzufügen") },
+                title = {
+                    Text(
+                        "Foto hinzufügen",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
                 text = {
                     ImageSelector(
                         onImageSelected = { uri ->
@@ -127,9 +133,15 @@ fun AddImage(
                 confirmButton = {},
                 dismissButton = {
                     TextButton(onClick = { showImageSelector = false }) {
-                        Text("Abbrechen")
+                        Text(
+                            "Abbrechen",
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
-                }
+                },
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -172,7 +184,11 @@ fun ImageSelector(
                 )
                 currentPhotoUri = uri
                 cameraLauncher.launch(uri)
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
         ) {
             Icon(Icons.Default.CameraAlt, contentDescription = null)
             Spacer(Modifier.padding(4.dp))
@@ -184,7 +200,8 @@ fun ImageSelector(
         Button(
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary
             ),
             onClick = {
                 galleryLauncher.launch(
@@ -208,7 +225,6 @@ fun Context.createImageFile(): File {
         externalCacheDir
     )
 }
-
 
 fun Context.copyUriToAppStorage(sourceUri: Uri): File {
     val newFile = createImageFile()

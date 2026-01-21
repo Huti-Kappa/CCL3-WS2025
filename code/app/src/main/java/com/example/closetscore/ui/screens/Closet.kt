@@ -260,10 +260,10 @@ fun ClosetGrid(
                     ) {
                         Text(text = "Outerwear")
                     }
-                    val isOne_PieceSelected = selectedCategory == ItemCategory.One_Piece
+                    val isOne_PieceSelected = selectedCategory == ItemCategory.Other
                     Button(
                         onClick = {
-                            selectedCategory = if (isOne_PieceSelected) null else ItemCategory.One_Piece
+                            selectedCategory = if (isOne_PieceSelected) null else ItemCategory.Other
                         },
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(

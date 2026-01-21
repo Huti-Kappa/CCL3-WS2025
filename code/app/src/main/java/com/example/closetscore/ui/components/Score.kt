@@ -42,8 +42,7 @@ fun Score() {
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp), // Außenabstand
+            .fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
