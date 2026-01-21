@@ -1,6 +1,7 @@
 package com.example.closetscore.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -38,11 +39,10 @@ fun ItemGrid(navController: NavController, itemsList: List<Item>, currentScore: 
     ) {
 
         item(span = { GridItemSpan(maxLineSpan) }) {
-            Score()
-        }
-
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            MidTitle("Your MVPs")
+            Column {
+                Score()
+                MidTitle("Your MVPs")
+            }
         }
         items(itemsList.take(2)) { item ->
             ItemCard(item = item,

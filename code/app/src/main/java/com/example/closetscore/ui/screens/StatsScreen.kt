@@ -4,6 +4,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Checkroom
+import androidx.compose.material.icons.filled.Eco
+import androidx.compose.material.icons.filled.EuroSymbol
+import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,10 +47,26 @@ fun StatsScreen(scoreViewModel: ScoreViewModel= viewModel(factory = AppViewModel
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                StatsTag(dataState.itemSize.toString(), "Items")
-                StatsTag(dataState.totalWears.toString(), "Total Wears")
-                StatsTag(dataState.thriftAverage.format(2) + "%", "Thrifted")
-                StatsTag(dataState.priceAverage.format(2) + "€", "Average Price")
+                StatsTag(
+                    count = dataState.itemSize.toString(),
+                    label = "Items",
+                    icon = Icons.Default.Checkroom
+                )
+                StatsTag(
+                    count = dataState.totalWears.toString(),
+                    label = "Total Wears",
+                    icon = Icons.Default.Repeat
+                )
+                StatsTag(
+                    count = dataState.thriftAverage.format(2) + "%",
+                    label = "Thrifted",
+                    icon = Icons.Default.Eco
+                )
+                StatsTag(
+                    count = dataState.priceAverage.format(2) + "€",
+                    label = "Average Price",
+                    icon = Icons.Default.EuroSymbol
+                )
             }
         }
         Spacer(Modifier.padding(12.dp))

@@ -16,7 +16,7 @@ private val DarkColorScheme = darkColorScheme(
     primary = LightGreen,
     onPrimary = Green, // Text on the primary button looks best in the dark green
     primaryContainer = Green,
-    onPrimaryContainer = Grey,
+    onPrimaryContainer = LightGreen,
 
     // Berry Red for secondary actions
     secondary = BrandRed,
