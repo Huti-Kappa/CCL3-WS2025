@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,7 +44,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -112,16 +112,19 @@ fun EditTemplateScreen(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = "Back",
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
                 Text(
                     text = "Edit Outfit",
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         if (isLoading) {
             Box(
@@ -130,7 +133,10 @@ fun EditTemplateScreen(
                     .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Loading...")
+                Text(
+                    "Loading...",
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
         } else {
             AnimatedContent(
@@ -165,7 +171,8 @@ fun EditTemplateScreen(
                             Text(
                                 text = "Select Items for Template",
                                 style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
 
@@ -216,7 +223,11 @@ fun EditTemplateScreen(
 
                                         isSuccess = true
                                     }
-                                }
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary
+                                )
                             ) {
                                 Text("Save Changes")
                             }
@@ -240,7 +251,7 @@ fun SelectableItemCardEdit(
             .clip(RoundedCornerShape(12.dp))
             .border(
                 width = if (isSelected) 4.dp else 1.dp,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(12.dp)
             )
             .clickable { onToggleSelection(item.id) }
@@ -266,7 +277,8 @@ fun SelectableItemCardEdit(
                 Text(
                     text = item.name,
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -280,7 +292,7 @@ fun SelectableItemCardEdit(
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
                     .size(32.dp)
-                    .background(Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(16.dp))
             )
         }
     }
@@ -298,13 +310,14 @@ fun EditTemplateSuccessView() {
         Icon(
             imageVector = Icons.Default.CheckCircle,
             contentDescription = "Success",
-            tint = Color(0xFF4CAF50),
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(120.dp)
         )
         Text(
             text = "Template Updated!",
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = 16.dp),
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
