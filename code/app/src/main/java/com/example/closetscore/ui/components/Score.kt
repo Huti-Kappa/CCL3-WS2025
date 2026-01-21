@@ -12,6 +12,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -23,30 +25,36 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.closetscore.ui.theme.Green
-
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.closetscore.ui.AppViewModelProvider
+import com.example.closetscore.ui.theme.ChartBlue
+import com.example.closetscore.ui.theme.ChartGreen
+import com.example.closetscore.ui.theme.ChartRed
+import com.example.closetscore.ui.viewmodel.ScoreViewModel
+import kotlin.math.roundToInt
 
 @Composable
-fun Score() {
-    val gradientStart = Color(0xFFE0F7FA) // Sehr helles Cyan/Grün
-    val gradientEnd = Color(0xFFE8F5E9)   // Sehr helles Grün
-    val scoreGreen = Color(0xFF22C55E)    // Das Haupt-Grün
-    val textDarkGreen = Color(0xFF1B5E20) // Dunkles Grün für Titel
+fun Score(viewModel: ScoreViewModel= viewModel(factory = AppViewModelProvider.Factory)) {
+    val score by viewModel.score.collectAsState()
+    val stats by viewModel.dataState.collectAsState()
 
-    // Daten (könnten später aus dem ViewModel kommen)
-    val score = 78
-    val savedCo2 = 12.4
-    val thriftedCount = 23
-    val totalItems = 47
-    val wornPercentage = 89
+    // Dynamic Colors based on Theme
+    val gradientStart = MaterialTheme.colorScheme.surface
+    val gradientEnd = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val subTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+
+    // Logic Calculations based on ViewModel Data
+    // Assuming approx 15kg CO2 saved per thrifted item
+    val thriftCount = (stats.itemSize * (stats.thriftAverage / 100)).roundToInt()
+    val savedCo2 = (thriftCount * 15.0).roundToInt()
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        // Hintergrund mit sanftem Verlauf
         Box(
             modifier = Modifier
                 .background(
@@ -56,32 +64,34 @@ fun Score() {
                         end = Offset(1000f, 1000f)
                     )
                 )
-                .padding(20.dp) // Innenabstand
+                .padding(20.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // LINKER TEIL: Der Kreis
+                // Left: Score Circle
                 CircularScoreIndicator(
                     score = score,
-                    color = scoreGreen,
+                    color = primaryColor,
+                    textColor = primaryColor,
+                    trackColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
                     modifier = Modifier.size(110.dp)
                 )
 
                 Spacer(modifier = Modifier.width(20.dp))
 
-                // RECHTER TEIL: Texte und Stats
+                // Right: Text and Stats
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    // Header: "Great progress!" + Icon
+                    // Header
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Great progress!",
+                            text = if (score > 70) "Great progress!" else "Keep going!",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = textDarkGreen,
+                                color = textColor,
                                 fontSize = 18.sp
                             )
                         )
@@ -89,46 +99,50 @@ fun Score() {
 
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    // Kleines Blatt Icon
                     Icon(
                         imageVector = Icons.Rounded.Eco,
                         contentDescription = null,
-                        tint = Color(0xFF66BB6A),
+                        tint = primaryColor,
                         modifier = Modifier.size(20.dp)
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    // CO2 Text
                     Text(
-                        text = "You've saved $savedCo2 kg CO₂",
+                        text = "You've saved ~$savedCo2 kg CO₂",
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.Gray,
+                            color = subTextColor,
                             fontSize = 13.sp
                         )
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Die 3 Statistiken unten
+                    // Stats Row
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         StatItem(
-                            value = thriftedCount.toString(),
+                            value = thriftCount.toString(),
                             label = "THRIFTED",
-                            underlineColor = scoreGreen
+                            underlineColor = ChartGreen, // Uses your Chart Colors
+                            textColor = textColor,
+                            labelColor = subTextColor
                         )
                         StatItem(
-                            value = totalItems.toString(),
+                            value = stats.itemSize.toString(),
                             label = "ITEMS",
-                            underlineColor = Color(0xFF3B82F6) // Blau
+                            underlineColor = ChartBlue,
+                            textColor = textColor,
+                            labelColor = subTextColor
                         )
                         StatItem(
-                            value = "$wornPercentage%",
-                            label = "WORN",
-                            underlineColor = Color(0xFFEC4899) // Pink
+                            value = stats.totalWears.toString(),
+                            label = "WEARS",
+                            underlineColor = ChartRed, // Or BrandRed
+                            textColor = textColor,
+                            labelColor = subTextColor
                         )
                     }
                 }
@@ -137,54 +151,50 @@ fun Score() {
     }
 }
 
-// ---------------------------------------------------------
-// Helper 1: Der Kreis mit dem Score
-// ---------------------------------------------------------
 @Composable
 fun CircularScoreIndicator(
     score: Int,
     color: Color,
+    textColor: Color,
+    trackColor: Color,
     modifier: Modifier = Modifier
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
     ) {
-        // Der gezeichnete Kreis (Canvas)
         Canvas(modifier = Modifier.fillMaxSize()) {
-            // 1. Hintergrund-Kreis (Grau)
+            // Background Ring
             drawArc(
-                color = Color.White.copy(alpha = 0.6f), // Weißer/Grauer Hintergrundring
+                color = trackColor,
                 startAngle = 0f,
                 sweepAngle = 360f,
                 useCenter = false,
-                style = Stroke(width = 12.dp.toPx()) // Dicke des Rings
+                style = Stroke(width = 12.dp.toPx())
             )
 
-            // 2. Fortschritts-Kreis (Grün)
-            // 360 * (Score / 100) berechnet den Winkel
+            // Progress Ring
             val sweepAngle = 360f * (score / 100f)
 
             drawArc(
                 color = color,
-                startAngle = -90f, // Startet oben bei 12 Uhr
+                startAngle = -90f,
                 sweepAngle = sweepAngle,
                 useCenter = false,
-                style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round) // Abgerundete Enden
+                style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
             )
         }
 
-        // Der Text in der Mitte
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.offset(y = (-4).dp) // Leicht nach oben korrigiert für Optik
+            modifier = Modifier.offset(y = (-4).dp)
         ) {
             Text(
                 text = score.toString(),
                 style = MaterialTheme.typography.headlineLarge.copy(
-                    fontFamily = FontFamily.Serif, // Serif Schriftart wie im Bild
+                    fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1B5E20), // Dunkelgrün
+                    color = textColor,
                     fontSize = 38.sp
                 )
             )
@@ -194,21 +204,20 @@ fun CircularScoreIndicator(
                     fontSize = 8.sp,
                     letterSpacing = 1.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
         }
     }
 }
 
-// ---------------------------------------------------------
-// Helper 2: Ein einzelnes Statistik-Item (Zahl + Label + Strich)
-// ---------------------------------------------------------
 @Composable
 fun StatItem(
     value: String,
     label: String,
-    underlineColor: Color
+    underlineColor: Color,
+    textColor: Color,
+    labelColor: Color
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -218,19 +227,18 @@ fun StatItem(
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
-                color = Color.Black.copy(alpha = 0.8f)
+                color = textColor
             )
         )
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall.copy(
-                color = Color.Gray.copy(alpha = 0.6f),
+                color = labelColor,
                 fontSize = 10.sp
             )
         )
         Spacer(modifier = Modifier.height(4.dp))
 
-        // Der farbige Strich unten
         Box(
             modifier = Modifier
                 .width(24.dp)
