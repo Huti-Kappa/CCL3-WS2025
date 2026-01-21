@@ -49,10 +49,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.closetscore.data.Item
 import com.example.closetscore.db.BrandType
 import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.db.ItemStatus
 import com.example.closetscore.ui.AppViewModelProvider
+import com.example.closetscore.ui.components.ItemActionDialog
 import com.example.closetscore.ui.components.SuccessView
 import com.example.closetscore.ui.components.TimesWornSection
 import com.example.closetscore.ui.viewmodel.ItemViewModel
@@ -327,7 +329,7 @@ fun ItemDetailComponent(
                 Button(
                     onClick = navigateToEdit,
                     modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onSurface, contentColor = MaterialTheme.colorScheme.background),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background, contentColor = MaterialTheme.colorScheme.onBackground),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Edit Item", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -338,7 +340,7 @@ fun ItemDetailComponent(
                 Button(
                     onClick = { showDeleteDialog = true },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onSurface, contentColor = MaterialTheme.colorScheme.background),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background, contentColor = MaterialTheme.colorScheme.onBackground),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Delete Item", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -348,74 +350,40 @@ fun ItemDetailComponent(
             }
 
             if (showDeleteDialog) {
-                AlertDialog(
-                    onDismissRequest = { showDeleteDialog = false },
-                    title = { Text("Delete Item?") },
-                    text = {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text("What happened to this item?")
-                            Spacer(modifier = Modifier.height(8.dp))
-                            fun updateStatus(newStatus: ItemStatus, successText: String) {
-                                coroutineScope.launch {
-                                    withContext(Dispatchers.IO) {
-                                        val updatedItem = currentItem.copy(status = newStatus)
-                                        itemViewModel.repository.updateItem(updatedItem)
-                                    }
-                                    showDeleteDialog = false
-                                    onSuccess(successText)
-                                }
-                            }
-
-                            OutlinedButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = { updateStatus(ItemStatus.SOLD, "Marked as Sold!") }
-                            ) {
-                                Text("Sold", color = androidx.compose.ui.graphics.Color(0xFF4CAF50))
-                            }
-
-                            OutlinedButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = { updateStatus(ItemStatus.DONATED, "Marked as Donated!") }
-                            ) {
-                                Text("Donated", color = androidx.compose.ui.graphics.Color(0xFF2196F3))
-                            }
-
-                            OutlinedButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = { updateStatus(ItemStatus.TRASHED, "Marked as Trashed") }
-                            ) {
-                                Text("Trashed", color = androidx.compose.ui.graphics.Color.Gray)
-                            }
-
-                            OutlinedButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = { updateStatus(ItemStatus.LOST, "Marked as Lost") }
-                            ) {
-                                Text("Lost", color = androidx.compose.ui.graphics.Color.Red)
-                            }
-
-                            TextButton(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        withContext(Dispatchers.IO) {
-                                            itemViewModel.repository.deleteItem(currentItem)
-                                        }
-                                        showDeleteDialog = false
-                                        onSuccess("Item Permanently Deleted!")
-                                    }
-                                }
-                            ) {
-                                Text("Full Delete (Remove from Score)", color = androidx.compose.ui.graphics.Color.Red)
-                            }
+                val itemUiModel = Item(
+                    id = currentItem.id,
+                    name = currentItem.name,
+                    photoUri = currentItem.photoUri,
+                    brandName = currentItem.brandName,
+                    brandType = currentItem.brandType,
+                    material = currentItem.material,
+                    category = currentItem.category,
+                    price = currentItem.price,
+                    isSecondHand = currentItem.isSecondHand,
+                    wearCount = currentItem.wearCount,
+                    dateAcquired = currentItem.dateAcquired,
+                    status = currentItem.status
+                )
+                ItemActionDialog(
+                    item = itemUiModel,
+                    onDismiss = { showDeleteDialog = false },
+                    onUpdateStatus = { newStatus ->
+                        val updatedEntity = currentItem.copy(status = newStatus)
+                        itemViewModel.updateItem(updatedEntity)
+                        showDeleteDialog = false
+                        val statusText = when(newStatus) {
+                            ItemStatus.SOLD -> "Item Sold!"
+                            ItemStatus.DONATED -> "Item Donated!"
+                            ItemStatus.TRASHED -> "Item Trashed"
+                            ItemStatus.LOST -> "Item Lost"
+                            else -> "Status Updated!"
                         }
+                        onSuccess(statusText)
                     },
-                    confirmButton = {
-                        TextButton(onClick = { showDeleteDialog = false }) {
-                            Text("Cancel")
-                        }
+                    onDelete = {
+                        itemViewModel.deleteItem(currentItem)
+                        showDeleteDialog = false
+                        onSuccess("Item Deleted!")
                     }
                 )
             }
