@@ -1,34 +1,29 @@
 package com.example.closetscore.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.db.TemplateWithItems
-import com.example.closetscore.ui.theme.Green
-import androidx.compose.runtime.*
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.closetscore.ui.AppViewModelProvider
-import com.example.closetscore.ui.theme.DarkestGrey
-import com.example.closetscore.ui.theme.White
+import com.example.closetscore.ui.theme.Black
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun TemplateCard(
@@ -65,11 +60,10 @@ fun TemplateCard(
                 Text(
                     text = "${templateWithItems.template.wearCount} Wears",
                     fontSize = 12.sp,
-                    color = DarkestGrey
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -87,12 +81,11 @@ fun TemplateCard(
                         itemViewModel.incrementWearCount(item.id)
                     }
                 },
-
                 modifier = Modifier.size(42.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = Green,
-                    contentColor = White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 Icon(
@@ -110,11 +103,14 @@ private fun ItemThumbnail(
     item: ItemEntity,
     modifier: Modifier = Modifier
 ) {
+    val backgroundColor = MaterialTheme.colorScheme.onSecondary
+
     Box(
         modifier = modifier
             .size(60.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant),
+            .background(backgroundColor)
+            .border(1.dp, Black.copy(alpha = 2f), RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
         if (item.photoUri != null) {
@@ -125,11 +121,10 @@ private fun ItemThumbnail(
                 contentScale = ContentScale.Crop
             )
         } else {
-
             Text(
                 text = item.name.take(1).uppercase(),
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = Black
             )
         }
     }

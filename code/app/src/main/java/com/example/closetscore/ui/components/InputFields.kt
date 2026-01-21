@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -48,26 +47,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.closetscore.db.BrandType
 import com.example.closetscore.db.ItemCategory
-import com.example.closetscore.ui.theme.Black
-import com.example.closetscore.ui.theme.DarkGrey
-import com.example.closetscore.ui.theme.DarkestGrey
-import com.example.closetscore.ui.theme.Grey
-import com.example.closetscore.ui.theme.LightGreen
-import com.example.closetscore.ui.theme.White
-import com.example.closetscore.ui.viewmodel.ItemViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.Int
-
 
 @Composable
 fun BasicInputField(
@@ -80,7 +69,7 @@ fun BasicInputField(
     Column {
         Text(
             text = label,
-            color = Black
+            color = MaterialTheme.colorScheme.onSurface
         )
         TextField(
             value = value,
@@ -88,17 +77,20 @@ fun BasicInputField(
             placeholder = {
                 Text(
                     text = label,
-                    color = DarkGrey
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             prefix = if (prefix != null) { { Text(prefix) } } else null,
             singleLine = true,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Grey,
-                focusedContainerColor = Grey,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                 unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
+                focusedIndicatorColor = Color.Transparent,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
             ),
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
@@ -125,18 +117,25 @@ fun DatePickerField(
         Column {
             Text(
                 text = label,
-                color = Black
+                color = MaterialTheme.colorScheme.onSurface
             )
             TextField(
                 value = value,
                 onValueChange = { },
                 readOnly = true,
-                placeholder = { Text("Select a date") },
+                placeholder = {
+                    Text(
+                        "Select a date",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
                 colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Grey,
-                    focusedContainerColor = Grey,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent
+                    focusedIndicatorColor = Color.Transparent,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 ),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
@@ -189,7 +188,7 @@ fun CategorySelection(
         Column {
             Text(
                 text = label,
-                color = Black
+                color = MaterialTheme.colorScheme.onSurface
             )
             TextField(
                 value = selectedCategory?.name ?: "",
@@ -198,15 +197,23 @@ fun CategorySelection(
                 placeholder = {
                     Text(
                         text = "Select a category",
-                        color = DarkGrey
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
-                trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.ArrowDropDown,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
                 colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Grey,
-                    focusedContainerColor = Grey,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent
+                    focusedIndicatorColor = Color.Transparent,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 ),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
@@ -229,19 +236,27 @@ fun CategorySelection(
     if (showSheet) {
         val categories = remember { ItemCategory.values() }
         ModalBottomSheet(
-            onDismissRequest = { showSheet = false }
+            onDismissRequest = { showSheet = false },
+            containerColor = MaterialTheme.colorScheme.surface
         ) {
             Text(
                 text = "Select Category",
                 style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(16.dp)
             )
             LazyColumn {
                 items(categories) { categoryItem ->
                     ListItem(
-                        headlineContent = { Text(categoryItem.name) },
+                        headlineContent = {
+                            Text(categoryItem.name, color = MaterialTheme.colorScheme.onSurface)
+                        },
                         leadingContent = {
-                            Icon(Icons.Default.Checkroom, contentDescription = null)
+                            Icon(
+                                Icons.Default.Checkroom,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         },
                         modifier = Modifier.clickable {
                             onCategorySelected(categoryItem)
@@ -269,7 +284,8 @@ fun SwitchRow(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
         )
         Switch(
             checked = checked,
@@ -294,6 +310,7 @@ fun StepperRow(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
         )
 
@@ -308,7 +325,6 @@ fun StepperRow(
                 Icon(Icons.Default.Remove, contentDescription = "Decrease")
             }
 
-
             OutlinedTextField(
                 value = if (value == 0) "" else value.toString(),
                 onValueChange = { input ->
@@ -320,7 +336,13 @@ fun StepperRow(
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.width(80.dp),
-                textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
+                textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
+                )
             )
 
             FilledTonalIconButton(
@@ -352,16 +374,18 @@ fun PriceInputField(
         prefix = currencySymbol
     )
 }
+
 @Composable
 fun SegmentedEnumSelector(
     options: List<String>,
     selectedOptionIndex: Int,
     onOptionSelected: (Int) -> Unit
 ) {
-    val selectedColor = LightGreen
-    val unselectedColor = Grey
-    val selectedTextColor = White
-    val unselectedTextColor = DarkestGrey
+    // Correctly mapped to your Theme
+    val selectedColor = MaterialTheme.colorScheme.primary
+    val unselectedColor = MaterialTheme.colorScheme.surfaceVariant
+    val selectedTextColor = MaterialTheme.colorScheme.onPrimary
+    val unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -412,7 +436,7 @@ fun SegmentedEnumSelector(
 fun LabelText(text: String) {
     Text(
         text = text,
-        color = Black,
+        color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.padding(bottom = 6.dp)
     )
 }
@@ -422,8 +446,15 @@ fun SectionContainer(content: @Composable ColumnScope.() -> Unit) {
     Column(
         modifier = Modifier
             .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
-            .background(color = White, shape = RoundedCornerShape(16.dp))
-            .border(width = 1.dp, color = Grey, shape = RoundedCornerShape(16.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(16.dp)
+            )
             .padding(16.dp)
     ) {
         content()

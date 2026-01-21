@@ -53,8 +53,6 @@ import com.example.closetscore.ui.components.ItemCard
 import com.example.closetscore.ui.components.SuccessView
 import com.example.closetscore.ui.components.TimesWornSection
 import com.example.closetscore.ui.navigation.Screen
-import com.example.closetscore.ui.theme.Black
-import com.example.closetscore.ui.theme.White
 import com.example.closetscore.ui.viewmodel.ItemViewModel
 import com.example.closetscore.ui.viewmodels.TemplateViewModel
 import kotlinx.coroutines.Dispatchers
@@ -150,23 +148,29 @@ fun TemplateDetailComponents(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = "Back",
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
                 Text(
                     text = "Outfit Detail",
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         if (isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Loading...")
+                Text(
+                    "Loading...",
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
         } else {
             templateWithItems?.let { template ->
@@ -184,7 +188,8 @@ fun TemplateDetailComponents(
                             Text(
                                 text = template.template.name,
                                 style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
@@ -222,7 +227,8 @@ fun TemplateDetailComponents(
                                     Text(
                                         text = template.items.size.toString(),
                                         style = MaterialTheme.typography.headlineSmall,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }
@@ -249,7 +255,8 @@ fun TemplateDetailComponents(
                                     Text(
                                         text = wearCount.toString(),
                                         style = MaterialTheme.typography.headlineSmall,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }
@@ -263,10 +270,7 @@ fun TemplateDetailComponents(
                                 wearCount = newCount
                                 templateWithItems = templateWithItems?.let { current ->
                                     val updatedEntity = current.template.copy(wearCount = newCount)
-                                    // Save to DB using the standard update function (passing the whole object)
                                     templateViewModel.updateTemplate(updatedEntity)
-
-                                    // Update local state
                                     current.copy(template = updatedEntity)
                                 }
                             },
@@ -278,6 +282,7 @@ fun TemplateDetailComponents(
                             text = "Items in this Outfit",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.padding(top = 8.dp)
                         )
                     }
@@ -327,7 +332,8 @@ fun TemplateDetailComponents(
                             Text(
                                 text = "Insights",
                                 style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Card(
@@ -354,7 +360,8 @@ fun TemplateDetailComponents(
                                         } else {
                                             "Start wearing this outfit to track insights"
                                         },
-                                        style = MaterialTheme.typography.bodyMedium
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }
@@ -369,8 +376,8 @@ fun TemplateDetailComponents(
                                 .height(56.dp)
                                 .padding(vertical = 8.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = White,
-                                contentColor = Black
+                                containerColor = MaterialTheme.colorScheme.background,
+                                contentColor = MaterialTheme.colorScheme.onSurface
                             ),
                             shape = RoundedCornerShape(12.dp)
                         ) {
@@ -391,8 +398,8 @@ fun TemplateDetailComponents(
                                 .fillMaxWidth()
                                 .height(56.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = White,
-                                contentColor = Black
+                                containerColor = MaterialTheme.colorScheme.background,
+                                contentColor = MaterialTheme.colorScheme.onSurface
                             ),
                             shape = RoundedCornerShape(12.dp)
                         ) {
@@ -413,7 +420,10 @@ fun TemplateDetailComponents(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Template not found")
+                    Text(
+                        "Template not found",
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
             }
         }
