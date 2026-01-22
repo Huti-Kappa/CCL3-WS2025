@@ -1,4 +1,5 @@
 package com.example.closetscore.ui.screens
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -30,11 +31,13 @@ import com.example.closetscore.ui.components.TotalValueChart
 import com.example.closetscore.ui.components.WearFrequencyChartFinal
 
 @Composable
-fun StatsScreen(scoreViewModel: ScoreViewModel= viewModel(factory = AppViewModelProvider.Factory)) {
+fun StatsScreen(scoreViewModel: ScoreViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val currentScore by scoreViewModel.score.collectAsState()
     val dataState by scoreViewModel.dataState.collectAsState()
     Column(
-        modifier = Modifier.padding(16.dp).verticalScroll(rememberScrollState())
+        modifier = Modifier
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         HeaderText("Dashboard")
         Spacer(modifier = Modifier.height(16.dp))
@@ -76,7 +79,6 @@ fun StatsScreen(scoreViewModel: ScoreViewModel= viewModel(factory = AppViewModel
         Spacer(Modifier.padding(12.dp))
         CategoriesChart(scoreViewModel)
         Spacer(Modifier.padding(12.dp))
-
     }
 }
 

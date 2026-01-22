@@ -122,8 +122,8 @@ fun AddItemGrid(
                         state.price.isNotBlank() &&
                         state.dateString.isNotBlank(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
                 ),
                 onClick = {
                     val finalPrice = state.price.toDoubleOrNull() ?: 0.0

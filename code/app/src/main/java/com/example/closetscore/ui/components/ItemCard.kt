@@ -110,7 +110,7 @@ fun ItemCard(
                     text = item.name,
                     style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Bold,
-                        color = Color.White // Keep White for contrast on image
+                        color = Color.White
                     ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -121,15 +121,17 @@ fun ItemCard(
 
                 if (item.isSecondHand) {
                     Surface(
-                        color = MaterialTheme.colorScheme.primary, // Light Green
-                        shape = RoundedCornerShape(bottomStart = 8.dp),
-                        modifier = Modifier.align(Alignment.TopEnd)
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(50),
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(8.dp)
                     ) {
                         Text(
-                            text = "THRIFTED",
+                            text = "Thrifted",
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 8.sp
+                                fontSize = 10.sp
                             ),
                             color = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -188,7 +190,7 @@ fun ItemCard(
                         Spacer(modifier = Modifier.height(2.dp))
 
                         Surface(
-                            color = MaterialTheme.colorScheme.surfaceVariant, // Light Grey
+                            color = MaterialTheme.colorScheme.surfaceVariant,
                             shape = RoundedCornerShape(6.dp)
                         ) {
                             val valueText = buildAnnotatedString {
@@ -310,7 +312,7 @@ fun ItemActionDialog(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { onUpdateStatus(ItemStatus.DONATED) },
                     colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.tertiary // Brand Orange
+                        contentColor = MaterialTheme.colorScheme.tertiary
                     )
                 ) {
                     Text("Donated")
