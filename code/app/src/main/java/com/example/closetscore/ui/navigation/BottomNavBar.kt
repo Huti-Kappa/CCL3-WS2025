@@ -1,7 +1,6 @@
 package com.example.closetscore.ui.navigation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -150,18 +149,14 @@ fun BottomNavBar(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .offset(y = (-22).dp)
-                .size(72.dp)
+                .size(64.dp)
                 .shadow(
-                    elevation = 12.dp,
+                    elevation = 6.dp,
                     shape = RoundedCornerShape(22.dp),
-                    spotColor = MaterialTheme.colorScheme.secondary,
-                    ambientColor = MaterialTheme.colorScheme.secondary
+                    spotColor = Color.Black, // ÄNDERUNG: Schwarz statt Secondary
+                    ambientColor = Color.Black // ÄNDERUNG: Schwarz statt Secondary
                 )
-                .border(
-                    width = 5.dp,
-                    color = MaterialTheme.colorScheme.onSecondary,
-                    shape = RoundedCornerShape(22.dp)
-                )
+            // ÄNDERUNG: .border(...) wurde entfernt
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
