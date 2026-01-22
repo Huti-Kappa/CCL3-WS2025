@@ -153,10 +153,9 @@ fun BottomNavBar(
                 .shadow(
                     elevation = 6.dp,
                     shape = RoundedCornerShape(22.dp),
-                    spotColor = Color.Black, // ÄNDERUNG: Schwarz statt Secondary
-                    ambientColor = Color.Black // ÄNDERUNG: Schwarz statt Secondary
+                    spotColor = Color.Black,
+                    ambientColor = Color.Black
                 )
-            // ÄNDERUNG: .border(...) wurde entfernt
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
