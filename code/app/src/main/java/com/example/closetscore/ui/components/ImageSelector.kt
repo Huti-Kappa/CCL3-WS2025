@@ -92,12 +92,12 @@ fun AddImage(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Foto hinzufügen",
+                    text = "Add Photo",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "Tippen zum Auswählen",
+                    text = "Tap to Choose",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

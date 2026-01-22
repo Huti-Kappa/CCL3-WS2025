@@ -116,7 +116,7 @@ fun AddItemGrid(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp, bottom = 32.dp),
-                // HIER: Prüfung auf Name, Category (Type), Price und Date
+
                 enabled = state.name.isNotBlank() &&
                         state.category != null &&
                         state.price.isNotBlank() &&
@@ -224,7 +224,7 @@ fun PurchaseSection(
             onValueChange = onPriceChange,
         )
         DatePickerField(
-            label = "Purchase Date*", // HIER: Sternchen hinzugefügt
+            label = "Purchase Date*",
             value = date,
             onDateSelected = onDateSelected
         )
