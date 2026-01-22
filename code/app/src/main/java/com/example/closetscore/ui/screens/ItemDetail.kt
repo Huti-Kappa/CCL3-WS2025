@@ -113,7 +113,6 @@ fun ItemDetailScreen(
         }
     }
 }
-
 @Composable
 fun ItemDetailComponent(
     itemId: Int,
@@ -326,25 +325,43 @@ fun ItemDetailComponent(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Button(
-                    onClick = navigateToEdit,
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background, contentColor = MaterialTheme.colorScheme.onBackground),
-                    shape = RoundedCornerShape(12.dp)
+                // --- MODIFIED BUTTON SECTION START ---
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text("Edit Item", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                }
+                    // Edit Button
+                    Button(
+                        onClick = navigateToEdit,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.background,
+                            contentColor = MaterialTheme.colorScheme.onBackground
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("Edit", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    }
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Button(
-                    onClick = { showDeleteDialog = true },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background, contentColor = MaterialTheme.colorScheme.onBackground),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text("Delete Item", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    // Delete Button
+                    Button(
+                        onClick = { showDeleteDialog = true },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.background,
+                            // Use Error color (Red) for the text
+                            contentColor = MaterialTheme.colorScheme.error
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("Delete", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    }
                 }
+                // --- MODIFIED BUTTON SECTION END ---
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
@@ -395,7 +412,6 @@ fun ItemDetailComponent(
         }
     }
 }
-
 @Composable
 fun InfoSection(item: ItemEntity) {
     Card(
