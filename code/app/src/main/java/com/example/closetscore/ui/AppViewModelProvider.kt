@@ -21,7 +21,7 @@ object AppViewModelProvider {
 
         initializer {
             val application = this[APPLICATION_KEY] as ClosetApplication
-            TemplateViewModel(application.templateRepository)
+            TemplateViewModel(application.templateRepository, application.itemRepository)
         }
 
         initializer {
