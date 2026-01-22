@@ -128,7 +128,8 @@ fun ClosetGrid(
 
                         DropdownMenu(
                             expanded = menuExpanded,
-                            onDismissRequest = { menuExpanded = false }
+                            onDismissRequest = { menuExpanded = false },
+                            containerColor = MaterialTheme.colorScheme.background,
                         ) {
                             DropdownMenuItem(
                                 text = { Text("Default") },

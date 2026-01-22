@@ -2,6 +2,7 @@ package com.example.closetscore.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,11 +10,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,9 +41,40 @@ fun TemplateCard(
     itemViewModel: ItemViewModel = viewModel(factory = AppViewModelProvider.Factory),
     templateViewModel: TemplateViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            containerColor = MaterialTheme.colorScheme.surface,
+            title = { Text(text = "Delete Template") },
+            text = { Text(text = "Are you sure you want to delete '${templateWithItems.template.name}'?") },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancel")
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        templateViewModel.deleteTemplate(templateWithItems.template.id)
+                        showDeleteDialog = false
+                    },
+                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text("Delete")
+                }
+            },
+        )
+    }
+
     Card(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
+        .combinedClickable(
+            onClick = { onClick() },
+            onLongClick = {
+                showDeleteDialog = true
+            }
+        ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
@@ -50,18 +89,22 @@ fun TemplateCard(
         ) {
 
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
-                Text(
-                    text = templateWithItems.template.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = "${templateWithItems.template.wearCount} Wears",
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Row (modifier=Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically){
+                    Text(
+                        text = templateWithItems.template.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "${templateWithItems.template.wearCount} Wears",
+                        fontSize = 12.sp,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -71,29 +114,44 @@ fun TemplateCard(
                     templateWithItems.items.take(4).forEach { item ->
                         ItemThumbnail(item = item)
                     }
+
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(
+                    onClick = {
+                        templateViewModel.incrementTemplateWearCount(templateWithItems.template.id)
+                        templateWithItems.items.forEach { item ->
+                            itemViewModel.incrementWearCount(item.id)
+                        }
+                    },
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    ),
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(36.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "I wore this today",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontWeight = FontWeight.SemiBold
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
 
-            FilledIconButton(
-                onClick = {
-                    templateViewModel.incrementTemplateWearCount(templateWithItems.template.id)
-                    templateWithItems.items.forEach { item ->
-                        itemViewModel.incrementWearCount(item.id)
-                    }
-                },
-                modifier = Modifier.size(42.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Wear",
-                    modifier = Modifier.size(20.dp)
-                )
-            }
+
         }
     }
 }
