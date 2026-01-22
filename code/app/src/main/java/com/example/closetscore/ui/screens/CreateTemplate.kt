@@ -153,7 +153,7 @@ fun TemplateCreateScreen(
                         Button(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 16.dp),
+                                .padding(top = 8.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.secondary,
                                 contentColor = MaterialTheme.colorScheme.onSecondary
@@ -167,7 +167,9 @@ fun TemplateCreateScreen(
                                 )
                             }
                         ) {
-                            Text("Create Template")
+                            Text("Create Template",
+                                modifier = Modifier.padding(8.dp)
+                            )
                         }
                     }
                 }

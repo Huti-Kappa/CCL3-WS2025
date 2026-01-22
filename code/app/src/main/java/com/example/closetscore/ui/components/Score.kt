@@ -20,14 +20,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.closetscore.ui.AppViewModelProvider
+import com.example.closetscore.ui.navigation.Screen
 import com.example.closetscore.ui.theme.ChartBlue
 import com.example.closetscore.ui.theme.ChartRed
 import com.example.closetscore.ui.viewmodel.ScoreViewModel
 import kotlin.math.roundToInt
 
 @Composable
-fun Score(viewModel: ScoreViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun Score(
+    viewModel: ScoreViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navController: NavController
+) {
     val score by viewModel.score.collectAsState()
     val stats by viewModel.dataState.collectAsState()
 
@@ -38,6 +43,7 @@ fun Score(viewModel: ScoreViewModel = viewModel(factory = AppViewModelProvider.F
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        onClick = { navController.navigate(Screen.Stats.route) },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondary,
             contentColor = MaterialTheme.colorScheme.onSecondary
