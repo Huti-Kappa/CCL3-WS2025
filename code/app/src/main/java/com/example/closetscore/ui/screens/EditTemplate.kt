@@ -161,15 +161,22 @@ fun EditTemplateScreen(
 
                         item(span = { GridItemSpan(maxLineSpan) }) {
                             BasicInputField(
-                                label = "Template Name",
+                                label = "Template Name*",
                                 value = name,
                                 onValueChange = { name = it }
                             )
                         }
 
                         item(span = { GridItemSpan(maxLineSpan) }) {
+                            TimesWornSection(
+                                wearCount = wearCount,
+                                onWearChange = { wearCount = it },
+                            )
+                        }
+
+                        item(span = { GridItemSpan(maxLineSpan) }) {
                             Text(
-                                text = "Select Items for Template",
+                                text = "Select Items for Template*",
                                 style = MaterialTheme.typography.titleMedium,
                                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
                                 color = MaterialTheme.colorScheme.onBackground
@@ -187,12 +194,6 @@ fun EditTemplateScreen(
                                         selectedItemIds + itemId
                                     }
                                 }
-                            )
-                        }
-                        item(span = { GridItemSpan(maxLineSpan) }) {
-                            TimesWornSection(
-                                wearCount = wearCount,
-                                onWearChange = { wearCount = it },
                             )
                         }
 
@@ -229,7 +230,9 @@ fun EditTemplateScreen(
                                     contentColor = MaterialTheme.colorScheme.onSecondary
                                 )
                             ) {
-                                Text("Save Changes")
+                                Text("Save Changes",
+                                modifier = Modifier.padding(8.dp)
+                                )
                             }
                         }
                     }

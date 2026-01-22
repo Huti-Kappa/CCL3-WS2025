@@ -44,8 +44,9 @@ fun ItemGrid(navController: NavController, itemsList: List<Item>, currentScore: 
         val leastWornItems = itemsList.sortedBy { it.wearCount }.take(2)
         item(span = { GridItemSpan(maxLineSpan) }) {
             Column {
-                Score()
+                Score(navController = navController)
                 Spacer(Modifier.padding(4.dp))
+
                 MidTitle("Your Most Worn",
                     onViewAllClick = {
                         navController.navigate(Screen.Closet.route)
