@@ -28,6 +28,6 @@ interface ItemDao {
     @Update
     suspend fun updateItem(itemEntity: ItemEntity)
 
-
-
+    @Update
+    suspend fun updateItems(items: List<ItemEntity>)
 }

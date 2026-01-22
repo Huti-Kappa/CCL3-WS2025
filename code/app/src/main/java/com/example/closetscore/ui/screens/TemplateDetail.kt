@@ -320,14 +320,18 @@ fun TemplateDetailComponents(
                             onWearChange = { newCount ->
                                 wearCount = newCount
                                 templateWithItems = templateWithItems?.let { current ->
-                                    val updatedEntity = current.template.copy(wearCount = newCount)
-                                    templateViewModel.updateTemplate(updatedEntity)
-                                    current.copy(template = updatedEntity)
+                                    val oldOutfitCount = current.template.wearCount
+                                    val delta = newCount - oldOutfitCount
+                                    val updatedTemplate = current.template.copy(wearCount = newCount)
+                                    val updatedItems = current.items.map { item ->
+                                        item.copy(wearCount = (item.wearCount + delta).coerceAtLeast(0))
+                                    }
+                                    templateViewModel.updateTemplateAndItems(updatedTemplate, updatedItems)
+                                    current.copy(template = updatedTemplate, items = updatedItems)
                                 }
                             },
                         )
                     }
-
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
                             text = "Items in this Outfit",

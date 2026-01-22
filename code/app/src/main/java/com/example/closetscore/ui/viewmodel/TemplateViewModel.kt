@@ -2,7 +2,9 @@ package com.example.closetscore.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.closetscore.data.ItemRepository
 import com.example.closetscore.data.TemplateRepository
+import com.example.closetscore.db.ItemEntity
 import com.example.closetscore.db.ItemStatus
 import com.example.closetscore.db.TemplateEntity
 import com.example.closetscore.db.TemplateWithItems
@@ -14,7 +16,8 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class TemplateViewModel(
-    val repository: TemplateRepository
+    val repository: TemplateRepository,
+    private val itemRepository: ItemRepository
 ) : ViewModel() {
 
     val templatesWithItems: StateFlow<List<TemplateWithItems>> =
@@ -80,6 +83,16 @@ class TemplateViewModel(
         }
     }
 
+    fun updateTemplateAndItems(templateEntity: TemplateEntity, items: List<ItemEntity>) {
+        viewModelScope.launch {
+            try {
+                repository.updateTemplate(templateEntity)
+                itemRepository.updateItems(items)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
     fun addItemToTemplate(templateId: Int, itemId: Int) {
         viewModelScope.launch {
             try {
