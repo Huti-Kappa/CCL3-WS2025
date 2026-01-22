@@ -28,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -38,6 +40,8 @@ fun BottomNavBar(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val haptic = LocalHapticFeedback.current
+
     val items = listOf(
         Screen.Home,
         Screen.Closet,
@@ -106,6 +110,7 @@ fun BottomNavBar(
                         },
                         selected = currentRoute == screen.route,
                         onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             navController.navigate(screen.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {
                                     saveState = true
@@ -129,6 +134,7 @@ fun BottomNavBar(
 
         FloatingActionButton(
             onClick = {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 navController.navigate(Screen.Create.route) {
                     popUpTo(navController.graph.findStartDestination().id) {
                         saveState = true

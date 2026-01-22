@@ -9,9 +9,11 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -22,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material3.AlertDialog
@@ -59,55 +62,96 @@ fun AddImage(
     onUriChange: (String) -> Unit
 ) {
     var showImageSelector by remember { mutableStateOf(false) }
+
+    // Styling Variablen
+    val shape = RoundedCornerShape(16.dp)
+    val backgroundColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+    val borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(260.dp) // Feste Höhe macht es zu einem klaren UI-Block
+            .padding(4.dp)
+            .clip(shape)
+            .background(backgroundColor)
+            .clickable { showImageSelector = true }, // Klickbar auf der ganzen Fläche
         contentAlignment = Alignment.Center
     ) {
         if (photoUri.isEmpty()) {
+            // --- ZUSTAND: LEER (PLACEHOLDER) ---
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.clickable { showImageSelector = true }
+                verticalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    Icons.Outlined.CameraAlt,
-                    contentDescription = "Camera",
-                    modifier = Modifier.size(128.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    imageVector = Icons.Outlined.CameraAlt,
+                    contentDescription = "Add Photo",
+                    modifier = Modifier.size(64.dp), // Etwas dezenter als 128dp
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Foto hinzufügen",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "Add Photo",
+                    text = "Tippen zum Auswählen",
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else {
-            Box(
-                contentAlignment = Alignment.TopEnd,
-            ) {
+            // --- ZUSTAND: BILD VORHANDEN ---
+            Box(modifier = Modifier.fillMaxSize()) {
                 AsyncImage(
                     model = photoUri,
                     contentDescription = "Selected photo",
-                    modifier = Modifier
-                        .size(200.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .clickable { showImageSelector = true },
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
 
+                // Dunkler Verlauf unten, damit man Icons besser sieht (optional)
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            androidx.compose.ui.graphics.Brush.verticalGradient(
+                                colors = listOf(androidx.compose.ui.graphics.Color.Transparent, androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.5f)),
+                                startY = 300f
+                            )
+                        )
+                )
+
+                // Löschen Button (Oben Rechts)
                 IconButton(
                     onClick = { onUriChange("") },
                     modifier = Modifier
-                        .offset(x = 8.dp, y = (-8).dp)
-                        .size(32.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.error,
-                            shape = CircleShape
-                        )
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f), CircleShape)
                 ) {
                     Icon(
                         Icons.Default.Close,
                         contentDescription = "Remove photo",
-                        tint = MaterialTheme.colorScheme.onError,
-                        modifier = Modifier.size(18.dp)
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+
+                // Bearbeiten Hinweis (Unten Rechts) - Das macht es "obvious"
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(12.dp)
+                        .background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit",
+                        modifier = Modifier.size(20.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
@@ -116,12 +160,7 @@ fun AddImage(
         if (showImageSelector) {
             AlertDialog(
                 onDismissRequest = { showImageSelector = false },
-                title = {
-                    Text(
-                        "Foto hinzufügen",
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                },
+                title = { Text("Foto hinzufügen") },
                 text = {
                     ImageSelector(
                         onImageSelected = { uri ->
@@ -133,15 +172,9 @@ fun AddImage(
                 confirmButton = {},
                 dismissButton = {
                     TextButton(onClick = { showImageSelector = false }) {
-                        Text(
-                            "Abbrechen",
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                        Text("Abbrechen")
                     }
-                },
-                containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                }
             )
         }
     }
