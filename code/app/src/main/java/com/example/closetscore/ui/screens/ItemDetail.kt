@@ -192,7 +192,7 @@ fun ItemDetailComponent(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Purchase Price",
+                    text = "Purchase Price " + currentItem.price,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -435,6 +435,7 @@ fun InfoSection(item: ItemEntity) {
 
             Spacer(modifier = Modifier.height(16.dp))
             InfoRow("Brand", item.brandName ?: "Unknown")
+            InfoRow("Price", item.price.toString())
             InfoRow("Impact", when(item.brandType) {
                 BrandType.ECO_SUSTAINABLE -> "Eco / Ethical"
                 BrandType.FAST_FASHION -> "Fast Fashion"
