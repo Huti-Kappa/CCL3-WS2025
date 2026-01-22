@@ -326,90 +326,62 @@ fun TemplateDetailComponents(
                         }
                     }
 
+
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Column {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Insights",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                ),
-                                shape = RoundedCornerShape(12.dp)
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp) // Abstand zwischen den Buttons
                             ) {
-                                Row(
+                                // Button 1: Edit
+                                Button(
+                                    onClick = navigateToEdit,
                                     modifier = Modifier
-                                        .padding(12.dp)
-                                        .fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically
+                                        .weight(1f) // WICHTIG: Nimmt 50% der Breite
+                                        .height(56.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.background,
+                                        contentColor = MaterialTheme.colorScheme.onSurface
+                                    ),
+                                    shape = RoundedCornerShape(12.dp)
                                 ) {
                                     Text(
-                                        text = "👕",
-                                        style = MaterialTheme.typography.headlineSmall,
-                                        modifier = Modifier.padding(end = 12.dp)
+                                        text = "Edit Template",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.SemiBold,
+                                        maxLines = 1 // Optional: Damit Text nicht umbricht
                                     )
+                                }
+
+                                // Button 2: Delete
+                                Button(
+                                    onClick = {
+                                        templateViewModel.deleteTemplate(templateId)
+                                        onSuccessChange()
+                                    },
+                                    modifier = Modifier
+                                        .weight(1f) // WICHTIG: Nimmt die anderen 50%
+                                        .height(56.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.background,
+                                        // Optional: Rote Schrift für Delete sieht oft besser aus
+                                        contentColor = MaterialTheme.colorScheme.error
+                                    ),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
                                     Text(
-                                        text = if (wearCount > 0) {
-                                            "You've worn this outfit $wearCount time${if (wearCount > 1) "s" else ""}"
-                                        } else {
-                                            "Start wearing this outfit to track insights"
-                                        },
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        text = "Delete Template",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.SemiBold,
+                                        maxLines = 1
                                     )
                                 }
                             }
+                            // Der Spacer kommt unter die Row
+                            Spacer(modifier = Modifier.height(24.dp))
                         }
-                    }
-
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Button(
-                            onClick = navigateToEdit,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp)
-                                .padding(vertical = 8.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.background,
-                                contentColor = MaterialTheme.colorScheme.onSurface
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text(
-                                text = "Edit Template",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Button(
-                            onClick = {
-                                templateViewModel.deleteTemplate(templateId)
-                                onSuccessChange()
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.background,
-                                contentColor = MaterialTheme.colorScheme.onSurface
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text(
-                                text = "Delete Template",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
                     }
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Spacer(modifier = Modifier.height(16.dp))
