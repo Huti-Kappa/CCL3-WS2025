@@ -192,7 +192,7 @@ fun ItemDetailComponent(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Purchase Price " + currentItem.price,
+                    text = "Purchase Price " + "€" + currentItem.price,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -325,12 +325,10 @@ fun ItemDetailComponent(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // --- MODIFIED BUTTON SECTION START ---
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Edit Button
                     Button(
                         onClick = navigateToEdit,
                         modifier = Modifier
@@ -345,7 +343,6 @@ fun ItemDetailComponent(
                         Text("Edit", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                     }
 
-                    // Delete Button
                     Button(
                         onClick = { showDeleteDialog = true },
                         modifier = Modifier
@@ -353,7 +350,6 @@ fun ItemDetailComponent(
                             .height(56.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.background,
-                            // Use Error color (Red) for the text
                             contentColor = MaterialTheme.colorScheme.error
                         ),
                         shape = RoundedCornerShape(12.dp)
@@ -361,7 +357,6 @@ fun ItemDetailComponent(
                         Text("Delete", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                     }
                 }
-                // --- MODIFIED BUTTON SECTION END ---
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
@@ -435,7 +430,7 @@ fun InfoSection(item: ItemEntity) {
 
             Spacer(modifier = Modifier.height(16.dp))
             InfoRow("Brand", item.brandName ?: "Unknown")
-            InfoRow("Price", item.price.toString())
+            InfoRow("Price", "€" + item.price)
             InfoRow("Impact", when(item.brandType) {
                 BrandType.ECO_SUSTAINABLE -> "Eco / Ethical"
                 BrandType.FAST_FASHION -> "Fast Fashion"
